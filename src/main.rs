@@ -1,16 +1,15 @@
 mod data_structs;
 mod database;
 mod views;
+mod windows;
 
 use crate::views::{
-    line_items::LineItemsView, 
-    participant::ParticipantsView, 
-    support_worker::SupportWorkersView,
-    venue::VenuesView, 
-    workshop::WorkshopsView,
+    line_items::LineItemsView, participant::ParticipantsView, support_worker::SupportWorkersView,
+    venue::VenuesView, workshop::WorkshopsView,
 };
 use eframe::egui;
 use egui::Ui;
+
 
 #[derive(PartialEq)]
 enum Views {
@@ -37,7 +36,6 @@ struct Content {
     line_items: LineItemsView,
 
     reveal_view_buttons: bool,
-
 }
 
 impl eframe::App for Content {
@@ -96,6 +94,6 @@ fn main() -> eframe::Result<()> {
     eframe::run_native(
         "LightBulbDB",
         options,
-        Box::new(|_cc| Box::<Content>::default()),
+        Box::new(|_cc| Ok(Box::<Content>::default())),
     )
 }

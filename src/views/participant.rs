@@ -1,20 +1,29 @@
 use egui::{Context, Ui};
+
+use crate::data_structs::Participant;
+use crate::windows::participant::{add_window::AddWindow, edit_window::EditWindow};
 use crate::database::DataBase;
 
 #[derive(Default)]
 pub struct ParticipantsView {
-    add_window_open: bool,
-    edit_window_open: bool,
-    reset_window_open: bool,
     db: DataBase,
+    search_response: String,
+
+    add_window: AddWindow,
+    edit_window: EditWindow,
 }
 
 impl ParticipantsView {
     pub fn ui(&mut self, ui: &mut Ui, ctx: &Context) {
-        ui.label("TEST");
         self.right_panel_view(ui);
         self.bottom_menu_view(ui);
-        self.windows_view(ui, ctx);
+        self.load_windows_ui(ui, ctx);
+        ui.vertical_centered(|ui| {
+            ui.add(
+                egui::TextEdit::singleline(&mut self.search_response)
+                    .hint_text("🔍 Type to search..."),
+            );
+        });
     }
 
     fn right_panel_view(&mut self, ui: &mut Ui) {
@@ -23,7 +32,7 @@ impl ParticipantsView {
             .default_width(150.0)
             .show_inside(ui, |ui| {
                 ui.vertical_centered(|ui| {
-                    ui.heading("Austin Delic");
+                    ui.heading(&self.search_response);
                 });
                 egui::ScrollArea::vertical().show(ui, |ui| {
                     ui.label("Right Panel!");
@@ -34,45 +43,24 @@ impl ParticipantsView {
     fn bottom_menu_view(&mut self, ui: &mut Ui) {
         egui::TopBottomPanel::bottom("bottom_panel")
             .resizable(false)
-            .max_height(15.0)
+            .max_height(25.0)
             .show_inside(ui, |ui| {
                 ui.horizontal(|ui| {
-                    if ui.button("Add").clicked() {
+                    if ui.button("➕ Create").clicked() {
                         self.db.drop_db().unwrap();
                         self.db.create_db().unwrap();
-                        self.add_window_open = !self.add_window_open;
+                        self.add_window.open = !self.add_window.open;
                     };
-                    if ui.button("Edit").clicked() {
-                        self.edit_window_open = !self.edit_window_open;
-                    };
-                    if ui.button("RESET").clicked() {
-                        self.reset_window_open = !self.reset_window_open;
+                    if ui.button("✏ Edit").clicked() {
+                        self.edit_window.open = !self.edit_window.open;
                     };
                 });
             });
     }
-    fn windows_view(&mut self, ui: &mut Ui, ctx: &Context) {
-        if self.add_window_open {
-            self.add_window(ui, ctx);
-        }
-        if self.edit_window_open {
-            self.edit_window(ui, ctx);
-        }
-    }
-
-    fn add_window(&mut self, _ui: &mut Ui, ctx: &Context) {
-        egui::Window::new("Add")
-            .open(&mut self.add_window_open)
-            .show(ctx, |ui| {
-                ui.label("done");
-            });
-    }
-
-    fn edit_window(&mut self, _ui: &mut Ui, ctx: &Context) {
-        egui::Window::new("Edit")
-            .open(&mut self.edit_window_open)
-            .show(ctx, |ui| {
-                ui.label("LOL");
-            });
+    fn load_windows_ui(&mut self, ui: &mut Ui, ctx: &Context) {
+        self.add_window.ui(ui, ctx);
+        self.edit_window.ui(ui, ctx);
     }
 }
+
+

@@ -6,6 +6,11 @@ pub struct DataBase {
 }
 
 impl DataBase {
+    fn new_connection(db_file_name: String) -> DataBase {
+        DataBase {
+            db: Connection::open(db_file_name).unwrap(),
+        }
+    }
     pub fn create_db(&self) -> Result<()> {
         self.db.execute(
             "
@@ -322,9 +327,7 @@ impl DataBase {
 }
 
 impl Default for DataBase {
-    fn default() -> DataBase {
-        DataBase {
-            db: Connection::open("LightBulb.db").unwrap(),
-        }
+    fn default() -> Self {
+        DataBase::new_connection(String::from("LightBulb.db"))
     }
 }
