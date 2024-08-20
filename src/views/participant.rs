@@ -1,8 +1,8 @@
 use egui::{Context, Ui};
 
-use crate::data_structs::Participant;
-use crate::windows::participant::{add_window::AddWindow, edit_window::EditWindow};
-use crate::database::DataBase;
+// use crate::database_logic::data_structs::Participant;
+use crate::windows::participant::{edit_window::EditWindow, add_participant_window::AddWindow};
+use crate::database_logic::database::DataBase;
 
 #[derive(Default)]
 pub struct ParticipantsView {

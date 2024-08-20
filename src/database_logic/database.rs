@@ -1,8 +1,8 @@
-use crate::data_structs::*;
+use crate::database_logic::data_structs::*;
 use rusqlite::{Connection, Result};
 
 pub struct DataBase {
-    db: Connection,
+    pub db: Connection,
 }
 
 impl DataBase {

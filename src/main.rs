@@ -1,7 +1,6 @@
-mod data_structs;
-mod database;
 mod views;
 mod windows;
+mod database_logic;
 
 use crate::views::{
     line_items::LineItemsView, participant::ParticipantsView, support_worker::SupportWorkersView,

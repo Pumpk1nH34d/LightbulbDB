@@ -1,4 +1,3 @@
-use crate::database::DataBase;
 use egui::{Context, Ui};
 
 pub struct EditWindow {
