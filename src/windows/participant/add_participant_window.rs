@@ -147,7 +147,7 @@ impl AddWindow {
                             first_name: self.first_name.clone(),
                             last_name: self.last_name.clone(),
                             medicare_number: self.medicare.clone(),
-                            dob: self.dob.0.then(|| self.dob.1),
+                            dob: self.dob.0.then_some(self.dob.1),
                             address: self.address.0.then(|| self.address.1.clone()),
                             suburb: self.suburb.0.then(|| self.suburb.1.clone()),
                             postcode: self.postcode.0.then(|| self.postcode.1.clone()),

@@ -325,7 +325,6 @@ impl DataBase {
         ))
     }
 }
-
 impl Default for DataBase {
     fn default() -> Self {
         DataBase::new_connection(String::from("LightBulb.db"))

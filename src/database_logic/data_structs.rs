@@ -11,7 +11,7 @@ pub struct LineItem {
 pub struct MedicalContact {
     pub first_name: String,
     pub last_name: String,
-    pub phone: i64,
+    pub phone: String,
     pub relationship: Option<String>,
 }
 
@@ -127,11 +127,11 @@ pub struct SupportWorker {
     pub address: Option<String>,
     pub suburb: Option<String>,
     pub postcode: Option<String>,
-    pub first_aid: Option<i32>,
+    pub first_aid: Option<bool>,
     pub first_aid_file: Option<String>,
     pub confidentiality_agreement: Option<String>,
     pub police_clearance: Option<String>,
-    pub car_insurance: Option<i32>,
+    pub car_insurance: Option<bool>,
     pub other_qualifications: Option<String>,
     pub notes: Option<String>,
     pub phone: String,

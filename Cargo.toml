@@ -2,10 +2,12 @@
 name = "LightBulbDB"
 version = "0.1.0"
 edition = "2021"
+authors = ["Austin Delic <delicaustin0@gmail.com>"]
+description = "Database editor for LightBulb Skills"
 
 [dependencies]
 eframe = "0.28.1"
 egui = "0.28.1"
-rusqlite = "0.31.0"
+rusqlite = "0.32.1"
 chrono = "0.4.38"
 egui_extras = {version = "0.28.1", features = ["datepicker"]}

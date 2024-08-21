@@ -54,6 +54,10 @@ impl ParticipantsView {
                     if ui.button("✏ Edit").clicked() {
                         self.edit_window.open = !self.edit_window.open;
                     };
+                    if ui.button("RESET DB").clicked() {
+                        self.db.drop_db().unwrap();
+                        self.db.create_db().unwrap();
+                    };
                 });
             });
     }

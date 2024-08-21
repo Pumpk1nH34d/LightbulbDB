@@ -1,5 +1,6 @@
 use egui::{Context, Ui};
 
+#[derive(Default)]
 pub struct EditWindow {
     pub open: bool,
 }
@@ -15,13 +16,5 @@ impl EditWindow {
 
     pub fn reset(&mut self) {
         self.open = false;
-    }
-}
-
-impl Default for EditWindow {
-    fn default() -> Self {
-        EditWindow {
-            open: false,
-        }
     }
 }
