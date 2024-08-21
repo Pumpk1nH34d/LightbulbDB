@@ -147,7 +147,7 @@ impl AddWindow {
                             first_name: self.first_name.clone(),
                             last_name: self.last_name.clone(),
                             medicare_number: self.medicare.clone(),
-                            dob: self.dob.0.then(|| self.dob.1.clone()),
+                            dob: self.dob.0.then(|| self.dob.1),
                             address: self.address.0.then(|| self.address.1.clone()),
                             suburb: self.suburb.0.then(|| self.suburb.1.clone()),
                             postcode: self.postcode.0.then(|| self.postcode.1.clone()),
@@ -158,18 +158,18 @@ impl AddWindow {
                             physical_notes: self.physical_notes.0.then(|| self.physical_notes.1.clone()),
                             other_notes: self.other_notes.0.then(|| self.other_notes.1.clone()),
                             support_ratio: self.support_ratio.0.then(|| self.support_ratio.1.clone()),
-                            photo_permission: self.photo_permission.0.then(|| self.photo_permission.1),
-                            private_hospital_preference: self.private_hospital_preference.0.then(|| self.private_hospital_preference.1),
+                            photo_permission: self.photo_permission.0.then_some(self.photo_permission.1),
+                            private_hospital_preference: self.private_hospital_preference.0.then_some(self.private_hospital_preference.1),
                             private_health_insurancer: self.private_health_insurer.0.then(|| self.private_health_insurer.1.clone()),
                             private_health_number: self.private_health_number.0.then(|| self.private_health_number.1.clone()),
                             communication_preference: self.communication_preference.0.then(|| self.communication_preference.1.clone()),
                             ndis_plan_number: self.ndis_plan_number.0.then(|| self.ndis_plan_number.1.clone()),
-                            ndis_plan_start_date: self.ndis_plan_start_date.0.then(|| self.ndis_plan_start_date.1.clone()),
-                            core_funding: self.core_funding.0.then(|| self.core_funding.1.clone()),
-                            capacity_building_funding: self.capacity_building_funding.0.then(|| self.capacity_building_funding.1.clone()),
-                            self_managed: self.self_managed.0.then(|| self.self_managed.1.clone()),
-                            plan_managed: self.plan_managed.0.then(|| self.plan_managed.1.clone()),
-                            ndis_plan_end_date: self.ndis_plan_end_date.0.then(|| self.ndis_plan_end_date.1.clone()),
+                            ndis_plan_start_date: self.ndis_plan_start_date.0.then_some(self.ndis_plan_start_date.1),
+                            core_funding: self.core_funding.0.then_some(self.core_funding.1),
+                            capacity_building_funding: self.capacity_building_funding.0.then_some(self.capacity_building_funding.1),
+                            self_managed: self.self_managed.0.then_some(self.self_managed.1),
+                            plan_managed: self.plan_managed.0.then_some(self.plan_managed.1),
+                            ndis_plan_end_date: self.ndis_plan_end_date.0.then_some(self.ndis_plan_end_date.1),
                         };
                         self.db.create_participant(new_participant).unwrap();
                     };
@@ -184,7 +184,6 @@ impl AddWindow {
     }
 
     pub fn reset_values(&mut self) {
-        self.db = DataBase::default();
-        // self.reset = false;
+        (*self, self.open) = (Self::default(), self.open);
     }
 }

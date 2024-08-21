@@ -1,7 +1,7 @@
 use egui::{Context, Ui};
 
 // use crate::database_logic::data_structs::Participant;
-use crate::windows::participant::{edit_window::EditWindow, add_participant_window::AddWindow};
+use crate::windows::participant::{edit_participant_window::EditWindow, add_participant_window::AddWindow};
 use crate::database_logic::database::DataBase;
 
 #[derive(Default)]
