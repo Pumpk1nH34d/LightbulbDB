@@ -64,7 +64,9 @@ impl AddWindow {
                             ui.label("Date of birth:");
                             ui.horizontal(|ui| {
                                 ui.add_enabled_ui(!self.dob.0, |ui| {
-                                    ui.add(DatePickerButton::new(&mut self.dob.1).highlight_weekends(false));
+                                    ui.add(DatePickerButton::new(&mut self.dob.1).format("%d-%m-%Y")
+                                        .highlight_weekends(false))
+                                    ;
                                 });
                                 ui.checkbox(&mut self.dob.0, "Null?");
                             });
@@ -144,34 +146,35 @@ impl AddWindow {
                 ui.horizontal(|ui| {
                     if ui.button("➕ ADD").clicked() {
                         let new_participant = Participant {
+                            id: None,
                             first_name: self.first_name.clone(),
                             last_name: self.last_name.clone(),
                             medicare_number: self.medicare.clone(),
-                            dob: self.dob.0.then_some(self.dob.1),
-                            address: self.address.0.then(|| self.address.1.clone()),
-                            suburb: self.suburb.0.then(|| self.suburb.1.clone()),
-                            postcode: self.postcode.0.then(|| self.postcode.1.clone()),
-                            phone: self.phone.0.then(|| self.phone.1.clone()),
-                            email: self.email.0.then(|| self.email.1.clone()),
-                            medical_notes: self.medical_notes.0.then(|| self.medical_notes.1.clone()),
-                            dietary_notes: self.physical_notes.0.then(|| self.physical_notes.1.clone()),
-                            physical_notes: self.physical_notes.0.then(|| self.physical_notes.1.clone()),
-                            other_notes: self.other_notes.0.then(|| self.other_notes.1.clone()),
-                            support_ratio: self.support_ratio.0.then(|| self.support_ratio.1.clone()),
-                            photo_permission: self.photo_permission.0.then_some(self.photo_permission.1),
-                            private_hospital_preference: self.private_hospital_preference.0.then_some(self.private_hospital_preference.1),
-                            private_health_insurancer: self.private_health_insurer.0.then(|| self.private_health_insurer.1.clone()),
-                            private_health_number: self.private_health_number.0.then(|| self.private_health_number.1.clone()),
-                            communication_preference: self.communication_preference.0.then(|| self.communication_preference.1.clone()),
-                            ndis_plan_number: self.ndis_plan_number.0.then(|| self.ndis_plan_number.1.clone()),
-                            ndis_plan_start_date: self.ndis_plan_start_date.0.then_some(self.ndis_plan_start_date.1),
-                            core_funding: self.core_funding.0.then_some(self.core_funding.1),
-                            capacity_building_funding: self.capacity_building_funding.0.then_some(self.capacity_building_funding.1),
-                            self_managed: self.self_managed.0.then_some(self.self_managed.1),
-                            plan_managed: self.plan_managed.0.then_some(self.plan_managed.1),
-                            ndis_plan_end_date: self.ndis_plan_end_date.0.then_some(self.ndis_plan_end_date.1),
+                            dob: (!self.dob.0).then_some(self.dob.1),
+                            address: (!self.address.0).then(|| self.address.1.clone()),
+                            suburb: (!self.suburb.0).then(|| self.suburb.1.clone()),
+                            postcode: (!self.postcode.0).then(|| self.postcode.1.clone()),
+                            phone: (!self.phone.0).then(|| self.phone.1.clone()),
+                            email: (!self.email.0).then(|| self.email.1.clone()),
+                            medical_notes: (!self.medical_notes.0).then(|| self.medical_notes.1.clone()),
+                            dietary_notes: (!self.dietary_notes.0).then(|| self.dietary_notes.1.clone()),
+                            physical_notes: (!self.physical_notes.0).then(|| self.physical_notes.1.clone()),
+                            other_notes: (!self.other_notes.0).then(|| self.other_notes.1.clone()),
+                            support_ratio: (!self.support_ratio.0).then(|| self.support_ratio.1.clone()),
+                            photo_permission: (!self.photo_permission.0).then_some(self.photo_permission.1),
+                            private_hospital_preference: (!self.private_hospital_preference.0).then_some(self.private_hospital_preference.1),
+                            private_health_insurancer: (!self.private_health_insurer.0).then(|| self.private_health_insurer.1.clone()),
+                            private_health_number: (!self.private_health_number.0).then(|| self.private_health_number.1.clone()),
+                            communication_preference: (!self.communication_preference.0).then(|| self.communication_preference.1.clone()),
+                            ndis_plan_number: (!self.ndis_plan_number.0).then(|| self.ndis_plan_number.1.clone()),
+                            ndis_plan_start_date: (!self.ndis_plan_start_date.0).then_some(self.ndis_plan_start_date.1),
+                            core_funding: (!self.core_funding.0).then_some(self.core_funding.1),
+                            capacity_building_funding: (!self.capacity_building_funding.0).then_some(self.capacity_building_funding.1),
+                            self_managed: (!self.self_managed.0).then_some(self.self_managed.1),
+                            plan_managed: (!self.plan_managed.0).then_some(self.plan_managed.1),
+                            ndis_plan_end_date: (!self.ndis_plan_end_date.0).then_some(self.ndis_plan_end_date.1),
                         };
-                        self.db.create_participant(new_participant).unwrap();
+                        self.db.insert_participant(new_participant).unwrap();
                     };
                     if ui.button("🔃 Reset").clicked() {
                         self.reset = true;

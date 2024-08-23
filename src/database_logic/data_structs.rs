@@ -30,8 +30,9 @@ pub struct ParticipantMedicalContact {
     pub medical_contact: i32,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Default, Clone)]
 pub struct Participant {
+    pub id: Option<i32>,
     pub first_name: String,
     pub last_name: String,
     pub medicare_number: String,
