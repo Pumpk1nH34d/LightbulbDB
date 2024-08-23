@@ -4,7 +4,7 @@ use crate::database_logic::database::DataBase;
 
 impl DataBase {
     pub fn create_support_worker(&self, sw: SupportWorker) -> Result<()> {
-        self.db.execute(
+        self.connection.execute(
             "INSERT INTO Support_Workers (first_name, last_name, phone, email, dob, address, suburb, postcode, first_aid, first_aid_file, confidentiality_agreement, police_clearance, car_insurance, other_qualifications, notes, phone) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15)",
             params![sw.first_name, sw.last_name, sw.phone, sw.dob.as_ref().unwrap().to_string(), sw.address, sw.suburb, sw.postcode, sw.first_aid, sw.first_aid_file, sw.confidentiality_agreement, sw.police_clearance, sw.car_insurance, sw.other_qualifications, sw.notes],
         )?; // need to add email
@@ -12,7 +12,7 @@ impl DataBase {
     }
 
     pub fn create_participant(&self, p: Participant) -> Result<()> {
-        self.db.execute(
+        self.connection.execute(
             "INSERT INTO Participants (first_name, last_name, medicare_number, dob, address, suburb, postcode, phone, email, medical_notes, dietary_notes, physical_notes, other_notes, support_ratio, photo_permission, private_hospital_preference, private_health_insurancer, private_health_number, communication_preference, ndis_plan_number, ndis_plan_start_date, core_funding, capacity_building_funding, self_managed, plan_managed, ndis_plan_end_date) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16, ?17, ?18, ?19, ?20, ?21, ?22, ?23, ?24, ?25, ?26)",
             params![
                 p.first_name,

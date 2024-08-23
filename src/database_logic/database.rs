@@ -2,17 +2,17 @@ use crate::database_logic::data_structs::*;
 use rusqlite::{Connection, Result};
 
 pub struct DataBase {
-    pub db: Connection,
+    pub connection: Connection,
 }
 
 impl DataBase {
     fn new_connection(db_file_name: String) -> DataBase {
         DataBase {
-            db: Connection::open(db_file_name).unwrap(),
+            connection: Connection::open(db_file_name).unwrap(),
         }
     }
     pub fn create_db(&self) -> Result<()> {
-        self.db.execute(
+        self.connection.execute(
             "
     CREATE TABLE LineItems (
 	id	TEXT NOT NULL UNIQUE,
@@ -23,7 +23,7 @@ impl DataBase {
             (),
         )?;
 
-        self.db.execute(
+        self.connection.execute(
             "
     CREATE TABLE Medical_Contacts (
 	id	INTEGER NOT NULL UNIQUE,
@@ -35,7 +35,7 @@ impl DataBase {
             (),
         )?;
 
-        self.db.execute(
+        self.connection.execute(
             "
     CREATE TABLE Parents (
 	id	INTEGER NOT NULL UNIQUE,
@@ -49,7 +49,7 @@ impl DataBase {
             (),
         )?;
 
-        self.db.execute(
+        self.connection.execute(
             "
     CREATE TABLE Participant__Medical_Contact (
 	participant	INTEGER NOT NULL,
@@ -60,7 +60,7 @@ impl DataBase {
             (),
         )?;
 
-        self.db.execute(
+        self.connection.execute(
             "
     CREATE TABLE Participants (
 	id	INTEGER NOT NULL UNIQUE,
@@ -95,7 +95,7 @@ impl DataBase {
             (),
         )?;
 
-        self.db.execute(
+        self.connection.execute(
             "
     CREATE TABLE Participants__LineItems (
 	participants	INTEGER NOT NULL,
@@ -106,7 +106,7 @@ impl DataBase {
             (),
         )?;
 
-        self.db.execute(
+        self.connection.execute(
             "
     CREATE TABLE Participants__Parents (
 	participant	INTEGER NOT NULL,
@@ -117,7 +117,7 @@ impl DataBase {
             (),
         )?;
 
-        self.db.execute(
+        self.connection.execute(
             "
     CREATE TABLE Participants__Plan_Managers (
 	participant	INTEGER NOT NULL,
@@ -128,7 +128,7 @@ impl DataBase {
             (),
         )?;
 
-        self.db.execute(
+        self.connection.execute(
             "
     CREATE TABLE Participants__Support_Coordinators (
 	participants	INTEGER NOT NULL,
@@ -139,7 +139,7 @@ impl DataBase {
             (),
         )?;
 
-        self.db.execute(
+        self.connection.execute(
             "
     CREATE TABLE Participants_Dislike (
 	subject	INTEGER NOT NULL,
@@ -151,7 +151,7 @@ impl DataBase {
             (),
         )?;
 
-        self.db.execute(
+        self.connection.execute(
             "
     CREATE TABLE Participants_Likes (
 	subject	INTEGER NOT NULL,
@@ -162,7 +162,7 @@ impl DataBase {
             (),
         )?;
 
-        self.db.execute(
+        self.connection.execute(
             "
     CREATE TABLE Plan_Managers (
 	id	INTEGER NOT NULL UNIQUE,
@@ -179,7 +179,7 @@ impl DataBase {
             (),
         )?;
 
-        self.db.execute(
+        self.connection.execute(
             "
     CREATE TABLE Support_Coordinators (
 	id	INTEGER NOT NULL UNIQUE,
@@ -195,7 +195,7 @@ impl DataBase {
             (),
         )?;
 
-        self.db.execute(
+        self.connection.execute(
             "
     CREATE TABLE Support_Workers (
 	id	INTEGER NOT NULL UNIQUE,
@@ -218,7 +218,7 @@ impl DataBase {
             (),
         )?;
 
-        self.db.execute(
+        self.connection.execute(
             "
     CREATE TABLE Venues (
 	id	INTEGER NOT NULL UNIQUE,
@@ -238,7 +238,7 @@ impl DataBase {
             (),
         )?;
 
-        self.db.execute(
+        self.connection.execute(
             "
     CREATE TABLE Workshop__Support_Worker (
 	workshop	INTEGER NOT NULL,
@@ -249,7 +249,7 @@ impl DataBase {
             (),
         )?;
 
-        self.db.execute(
+        self.connection.execute(
             "
     CREATE TABLE Workshops (
 	id	INTEGER NOT NULL UNIQUE,
@@ -267,7 +267,7 @@ impl DataBase {
         Ok(())
     }
     pub fn new_support_worker(&self, sw: &SupportWorker) -> Result<()> {
-        self.db.execute(
+        self.connection.execute(
             "INSERT INTO Support_Workers (first_name, last_name, dob, address, suburb, postcode, first_aid, first_aid_file, confidentiality_agreement, police_clearance, car_insurance, other_qualifications, notes, phone) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14)",
             rusqlite::params![sw.first_name, sw.last_name, sw.dob, sw.address, sw.suburb, sw.postcode, sw.first_aid, sw.first_aid_file, sw.confidentiality_agreement, sw.police_clearance, sw.car_insurance, sw.other_qualifications, sw.notes, sw.phone],
         )?;
@@ -294,13 +294,13 @@ impl DataBase {
             "Workshops",
         ];
         for table in tables.iter() {
-            self.db
+            self.connection
                 .execute(&format!("DROP TABLE IF EXISTS {}", table), [])?;
         }
         Ok(())
     }
     pub fn get_name(&self) -> Result<String> {
-        let mut stmt = self.db.prepare("SELECT first_name, last_name, dob, address, suburb, postcode, first_aid, first_aid_file, confidentiality_agreement, police_clearance, car_insurance, other_qualifications, notes, phone FROM Support_Workers")?;
+        let mut stmt = self.connection.prepare("SELECT first_name, last_name, dob, address, suburb, postcode, first_aid, first_aid_file, confidentiality_agreement, police_clearance, car_insurance, other_qualifications, notes, phone FROM Support_Workers")?;
         let person_iter = stmt.query_map([], |row| {
             Ok(SupportWorker {
                 first_name: row.get(0)?,

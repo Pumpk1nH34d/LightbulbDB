@@ -11,3 +11,4 @@ egui = "0.28.1"
 rusqlite = "0.32.1"
 chrono = "0.4.38"
 egui_extras = {version = "0.28.1", features = ["datepicker"]}
+
