@@ -3,7 +3,7 @@ mod windows;
 mod database_logic;
 
 use crate::views::{
-    line_items::LineItemsView, participant::ParticipantsView, support_worker::SupportWorkersView,
+    participant::ParticipantsView, support_worker::SupportWorkersView,
     venue::VenuesView, workshop::WorkshopsView,
 };
 use eframe::egui;
@@ -16,7 +16,6 @@ enum Views {
     Workshops,
     SupportWorkers,
     Venues,
-    LineItems,
 }
 
 impl Default for Views {
@@ -32,9 +31,6 @@ struct Content {
     workshops: WorkshopsView,
     support_workers: SupportWorkersView,
     venues: VenuesView,
-    line_items: LineItemsView,
-
-    reveal_view_buttons: bool,
 }
 
 impl eframe::App for Content {
@@ -56,24 +52,9 @@ impl Content {
                 "👱 Participants",
             );
             ui.selectable_value(&mut self.current_view, Views::Workshops, "🛠 Workshops");
-            ui.selectable_value(
-                &mut self.current_view,
-                Views::SupportWorkers,
-                "📖 Support Workers",
+            ui.selectable_value(&mut self.current_view, Views::SupportWorkers,"📖 Support Workers",
             );
-            if ui
-                .button(match self.reveal_view_buttons {
-                    true => "⏵",
-                    false => "•••",
-                })
-                .clicked()
-            {
-                self.reveal_view_buttons = !self.reveal_view_buttons;
-            }
-            if self.reveal_view_buttons {
-                ui.selectable_value(&mut self.current_view, Views::Venues, "🏡 Venues");
-                ui.selectable_value(&mut self.current_view, Views::LineItems, "📎 Line Items");
-            }
+            ui.selectable_value(&mut self.current_view, Views::Venues, "🏡 Venues");
         });
     }
 
@@ -82,15 +63,14 @@ impl Content {
             Views::ParticipantsView => self.participants.ui(ui, ctx),
             Views::Workshops => self.workshops.ui(ui),
             Views::SupportWorkers => self.support_workers.ui(ui, ctx),
-            Views::Venues => self.venues.ui(ui),
-            Views::LineItems => self.line_items.ui(ui),
+            Views::Venues => self.venues.ui(ui, ctx),
         }
     }
 }
 
 fn main() -> eframe::Result<()> {
     let options = eframe::NativeOptions::default();
-    eframe::run_native(
+    eframe::run_native( 
         "LightBulbDB",
         options,
         Box::new(|_cc| Ok(Box::<Content>::default())),

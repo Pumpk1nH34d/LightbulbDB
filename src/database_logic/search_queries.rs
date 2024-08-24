@@ -1,4 +1,4 @@
-use crate::database_logic::data_structs::{Participant, SupportWorker};
+use crate::database_logic::data_structs::{Participant, SupportWorker, Venue};
 use crate::database_logic::database::DataBase;
 use chrono::NaiveDate;
 
@@ -86,6 +86,32 @@ impl DataBase {
                 notes: row.get(13).unwrap_or(Some(String::new())),
 
 
+            })
+        })
+            .unwrap()
+            .collect::<Result<Vec<_>, _>>()
+            .unwrap()
+    }
+
+    pub fn get_all_venues(&self) -> Vec<Venue> {
+        let mut stmt = self
+            .connection
+            .prepare("SELECT * FROM Venues")
+            .unwrap();
+        stmt.query_map([], |row| {
+            Ok(Venue {
+                id: row.get_unwrap(0),
+                name: row.get_unwrap(1),
+                address: row.get(2).unwrap_or(Some(String::new())),
+                suburb: row.get(3).unwrap_or(Some(String::new())),
+                postcode: row.get(4).unwrap_or(Some(String::new())),
+                state: row.get(5).unwrap_or(Some(String::new())),
+                description: row.get(6).unwrap_or(Some(String::new())),
+                contact_person_name: row.get(7).unwrap_or(Some(String::new())),
+                contact_person_phone: row.get(8).unwrap_or(Some(String::new())),
+                venue_phone_number: row.get(9).unwrap_or(Some(String::new())),
+                price: row.get(10).unwrap_or(Some(String::new())),
+                notes: row.get(11).unwrap_or(Some(String::new())),
             })
         })
             .unwrap()

@@ -1,6 +1,6 @@
 use crate::database_logic::data_structs::{SupportWorker};
 use crate::database_logic::database::DataBase;
-use crate::windows::support_workers::{
+use crate::windows::support_worker::{
     add_support_worker_window::AddWindow, edit_support_worker_window::EditWindow,
 };
 use egui::{Context, Ui};
@@ -46,7 +46,7 @@ impl SupportWorkersView {
                 ui.end_row();
             });
         egui::ScrollArea::vertical().show(ui, |ui| {
-            egui::Grid::new("results")
+            egui::Grid::new("support_worker_results")
                 .num_columns(5)
                 .spacing([30.0, 4.0])
                 .striped(true)
@@ -103,7 +103,6 @@ impl SupportWorkersView {
                             self.selected_support_worker
                                 .dob
                                 .unwrap_or_default()
-                                .to_string()
                         ));
                         ui.label(format!(
                             "phone: {}",
@@ -137,28 +136,24 @@ impl SupportWorkersView {
                             "first_aid: {}",
                             self.selected_support_worker
                                 .first_aid
-                                .clone()
                                 .unwrap_or_default()
                         ));
                         ui.label(format!(
                             "confidentiality_agreement: {}",
                             self.selected_support_worker
                                 .confidentiality_agreement
-                                .clone()
                                 .unwrap_or_default()
                         ));
                         ui.label(format!(
                             "police_clearance: {}",
                             self.selected_support_worker
                                 .police_clearance
-                                .clone()
                                 .unwrap_or_default()
                         ));
                         ui.label(format!(
                             "car_insurance: {}",
                             self.selected_support_worker
                                 .car_insurance
-                                .clone()
                                 .unwrap_or_default()
                         ));
                         ui.label(format!(

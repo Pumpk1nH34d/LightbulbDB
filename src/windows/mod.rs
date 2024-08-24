@@ -1,2 +1,3 @@
 pub mod participant;
-pub mod support_workers;
+pub mod support_worker;
+pub mod venue;

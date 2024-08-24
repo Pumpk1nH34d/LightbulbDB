@@ -46,7 +46,7 @@ impl ParticipantsView {
                 ui.end_row();
             });
         egui::ScrollArea::vertical().show(ui, |ui| {
-            egui::Grid::new("results")
+            egui::Grid::new("participant_results")
                 .num_columns(5)
                 .spacing([30.0, 4.0])
                 .striped(true)
@@ -110,7 +110,6 @@ impl ParticipantsView {
                             self.selected_participant
                                 .dob
                                 .unwrap_or_default()
-                                .to_string()
                         ));
                         ui.label(format!(
                             "address: {}",
@@ -216,7 +215,6 @@ impl ParticipantsView {
                             self.selected_participant
                                 .ndis_plan_start_date
                                 .unwrap_or_default()
-                                .to_string()
                         ));
                         ui.label(format!(
                             "core_funding: {}",
@@ -241,7 +239,6 @@ impl ParticipantsView {
                             self.selected_participant
                                 .ndis_plan_end_date
                                 .unwrap_or_default()
-                                .to_string()
                         ));
                     });
                 } else {

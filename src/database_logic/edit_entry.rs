@@ -1,4 +1,4 @@
-use crate::database_logic::data_structs::{Participant, SupportWorker};
+use crate::database_logic::data_structs::{Participant, SupportWorker, Venue};
 use rusqlite::{Result, params};
 use crate::database_logic::database::DataBase;
 
@@ -21,7 +21,7 @@ impl DataBase {
                 participant.physical_notes.map(|value| value.to_string()),
                 participant.other_notes.map(|value| value.to_string()),
                 participant.support_ratio.map(|value| value.to_string()),
-                participant.photo_permission.map(|value| value),
+                participant.photo_permission,
                 participant.private_hospital_preference.map(|value| value.to_string()),
                 participant.private_health_insurer.map(|value| value.to_string()),
                 participant.private_health_number.map(|value| value.to_string()),
@@ -60,6 +60,27 @@ impl DataBase {
                 support_worker.id
             ],
         )?;
+        Ok(())
+    }
+
+    pub fn edit_venue(&self, venue: Venue) -> Result<()> {
+        self.connection.execute(
+            "UPDATE Venues SET name = ?1, address = ?2, suburb = ?3, postcode = ?4, state = ?5, description = ?6, contact_person_name = ?7, contact_person_phone = ?8, venue_phone_number = ?9, price = ?10, notes = ?11 WHERE id = ?12",
+            params![
+                venue.name,
+                venue.address.map(|value| value.to_string()),
+                venue.suburb.map(|value| value.to_string()),
+                venue.postcode.map(|value| value.to_string()),
+                venue.state.map(|value| value.to_string()),
+                venue.description.map(|value| value.to_string()),
+                venue.contact_person_name.map(|value| value.to_string()),
+                venue.contact_person_phone.map(|value| value.to_string()),
+                venue.venue_phone_number.map(|value| value.to_string()),
+                venue.price.map(|value| value.to_string()),
+                venue.notes.map(|value| value.to_string()),
+                venue.id
+            ],
+        ).unwrap();
         Ok(())
     }
 }

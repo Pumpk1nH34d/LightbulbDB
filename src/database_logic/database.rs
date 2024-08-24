@@ -225,7 +225,7 @@ impl DataBase {
 	address	TEXT,
 	suburb	TEXT,
 	postcode	TEXT,
-	state	TEXT NOT NULL,
+	state	TEXT,
 	description	TEXT,
 	contact_person_name	TEXT,
 	contact_person_phone	TEXT,

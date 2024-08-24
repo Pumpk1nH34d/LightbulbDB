@@ -140,13 +140,14 @@ pub struct SupportWorker {
 
 }
 
-#[derive(Debug)]
+#[derive(Debug, Default, Clone)]
 pub struct Venue {
+    pub id: Option<i32>,
     pub name: String,
     pub address: Option<String>,
     pub suburb: Option<String>,
     pub postcode: Option<String>,
-    pub state: String,
+    pub state: Option<String>,
     pub description: Option<String>,
     pub contact_person_name: Option<String>,
     pub contact_person_phone: Option<String>,

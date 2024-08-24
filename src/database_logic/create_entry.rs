@@ -1,4 +1,4 @@
-use crate::database_logic::data_structs::{Participant, SupportWorker};
+use crate::database_logic::data_structs::{Participant, SupportWorker, Venue};
 use crate::database_logic::database::DataBase;
 use rusqlite::{params, Result};
 
@@ -76,6 +76,26 @@ impl DataBase {
                 support_worker.car_insurance.map(|value| value.to_string()),
                 support_worker.other_qualifications.map(|value| value.to_string()),
                 support_worker.notes.map(|value| value.to_string()),
+            ],
+        )?;
+        Ok(())
+    }
+    
+    pub fn add_venue(&self, venue: Venue) -> Result<()> {
+        self.connection.execute(
+            "INSERT INTO Venues (name, address, suburb, postcode, state, description, contact_person_name, contact_person_phone, venue_phone_number, price, notes) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11)",
+            params![
+                venue.name,
+                venue.address.map(|value| value.to_string()),
+                venue.suburb.map(|value| value.to_string()),
+                venue.postcode.map(|value| value.to_string()),
+                venue.state.map(|value| value.to_string()),
+                venue.description.map(|value| value.to_string()),
+                venue.contact_person_name.map(|value| value.to_string()),
+                venue.contact_person_phone.map(|value| value.to_string()),
+                venue.venue_phone_number.map(|value| value.to_string()),
+                venue.price.map(|value| value.to_string()),
+                venue.notes.map(|value| value.to_string()),
             ],
         )?;
         Ok(())
