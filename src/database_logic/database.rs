@@ -299,31 +299,6 @@ impl DataBase {
         }
         Ok(())
     }
-    pub fn get_name(&self) -> Result<String> {
-        let mut stmt = self.connection.prepare("SELECT first_name, last_name, dob, address, suburb, postcode, first_aid, first_aid_file, confidentiality_agreement, police_clearance, car_insurance, other_qualifications, notes, phone FROM Support_Workers")?;
-        let person_iter = stmt.query_map([], |row| {
-            Ok(SupportWorker {
-                first_name: row.get(0)?,
-                last_name: row.get(1)?,
-                dob: row.get(2)?,
-                address: row.get(3)?,
-                suburb: row.get(4)?,
-                postcode: row.get(5)?,
-                first_aid: row.get(6)?,
-                first_aid_file: row.get(7)?,
-                confidentiality_agreement: row.get(8)?,
-                police_clearance: row.get(9)?,
-                car_insurance: row.get(10)?,
-                other_qualifications: row.get(11)?,
-                notes: row.get(12)?,
-                phone: row.get(13)?,
-            })
-        })?;
-        Ok(format!(
-            "{:?}",
-            person_iter.into_iter().collect::<Vec<_>>().len()
-        ))
-    }
 }
 impl Default for DataBase {
     fn default() -> Self {

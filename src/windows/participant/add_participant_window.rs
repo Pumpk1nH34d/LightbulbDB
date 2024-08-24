@@ -12,10 +12,10 @@ pub struct AddWindow {
 
     first_name: String,
     last_name: String,
+    medicare: String,
     dob: (bool, NaiveDate),
     phone: (bool, String),
     email: (bool, String),
-    medicare: String,
     address: (bool, String),
     suburb: (bool, String),
     postcode: (bool, String),
@@ -44,7 +44,7 @@ impl AddWindow {
             .open(&mut self.open)
             .show(ctx, |ui| {
                 egui::ScrollArea::vertical().show(ui, |ui| {
-                    egui::Grid::new("my_grid")
+                    egui::Grid::new("add_grid")
                         .num_columns(2)
                         .spacing([40.0, 4.0])
                         .striped(true)
@@ -65,7 +65,8 @@ impl AddWindow {
                             ui.horizontal(|ui| {
                                 ui.add_enabled_ui(!self.dob.0, |ui| {
                                     ui.add(DatePickerButton::new(&mut self.dob.1).format("%d-%m-%Y")
-                                        .highlight_weekends(false))
+                                        .highlight_weekends(false)
+                                        .id_source("dob"))
                                     ;
                                 });
                                 ui.checkbox(&mut self.dob.0, "Null?");
@@ -139,7 +140,83 @@ impl AddWindow {
                                 ui.checkbox(&mut self.photo_permission.0, "Null?");
                             });
                             ui.end_row();
+                            ui.label("private_hospital_preference:");
+                            ui.horizontal(|ui| {
+                                ui.checkbox(&mut self.private_hospital_preference.1, "private_hospital_preference?");
+                                ui.checkbox(&mut self.private_hospital_preference.0, "Null?");
+                            });
+                            ui.end_row();
+                            ui.label("private_health_number:");
+                            ui.horizontal(|ui| {
+                                ui.add_enabled_ui(!self.private_health_number.0, |ui| {
+                                    ui.add(TextEdit::singleline(&mut self.private_health_number.1).hint_text("private_health_number"));
+                                });
+                                ui.checkbox(&mut self.private_health_number.0, "Null?");
+                            });
+                            ui.end_row();
+                            ui.label("communication_preference:");
+                            ui.horizontal(|ui| {
+                                ui.add_enabled_ui(!self.communication_preference.0, |ui| {
+                                    ui.add(TextEdit::singleline(&mut self.communication_preference.1).hint_text("communication_preference"));
+                                });
+                                ui.checkbox(&mut self.communication_preference.0, "Null?");
+                            });
+                            ui.end_row();
+                            ui.label("ndis_plan_number:");
+                            ui.horizontal(|ui| {
+                                ui.add_enabled_ui(!self.ndis_plan_number.0, |ui| {
+                                    ui.add(TextEdit::singleline(&mut self.ndis_plan_number.1).hint_text("ndis_plan_number"));
+                                });
+                                ui.checkbox(&mut self.ndis_plan_number.0, "Null?");
+                            });
+                            ui.end_row();
+                            ui.label("ndis_plan_start_date:");
+                            ui.horizontal(|ui| {
+                                ui.add_enabled_ui(!self.ndis_plan_start_date.0, |ui| {
+                                    ui.add(DatePickerButton::new(&mut self.ndis_plan_start_date.1).format("%d-%m-%Y")
+                                        .highlight_weekends(false)
+                                        .id_source("ndis_start"))
+                                    ;
+                                });
+                                ui.checkbox(&mut self.ndis_plan_start_date.0, "Null?");
+                            });
+                            ui.end_row();
+                            ui.label("ndis_plan_end_date:");
+                            ui.horizontal(|ui| {
+                                ui.add_enabled_ui(!self.ndis_plan_end_date.0, |ui| {
+                                    ui.add(DatePickerButton::new(&mut self.ndis_plan_end_date.1).format("%d-%m-%Y")
+                                        .highlight_weekends(false)
+                                        .id_source("ndis_end"))
+                                    ;
+                                });
+                                ui.checkbox(&mut self.ndis_plan_end_date.0, "Null?");
+                            });
+                            ui.end_row();
+                            ui.label("core_funding:");
+                            ui.horizontal(|ui| {
+                                ui.checkbox(&mut self.core_funding.1, "core_funding?");
+                                ui.checkbox(&mut self.core_funding.0, "Null?");
+                            });
+                            ui.end_row();
+                            ui.label("capacity_building_funding:");
+                            ui.horizontal(|ui| {
+                                ui.checkbox(&mut self.capacity_building_funding.1, "capacity_building_funding?");
+                                ui.checkbox(&mut self.capacity_building_funding.0, "Null?");
+                            });
+                            ui.end_row();
+                            ui.label("self_managed:");
+                            ui.horizontal(|ui| {
+                                ui.checkbox(&mut self.self_managed.1, "self_managed?");
+                                ui.checkbox(&mut self.self_managed.0, "Null?");
+                            });
+                            ui.end_row();
+                            ui.label("plan_managed:");
+                            ui.horizontal(|ui| {
+                                ui.checkbox(&mut self.plan_managed.1, "plan_managed?");
+                                ui.checkbox(&mut self.plan_managed.0, "Null?");
+                            });
 
+                            ui.end_row();
                         });
                 });
                 ui.separator();
