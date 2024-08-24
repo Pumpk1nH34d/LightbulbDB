@@ -1,5 +1,5 @@
 use chrono::NaiveDate;
-use crate::database_logic::data_structs::{Venue, Workshop};
+use crate::database_logic::data_structs::Workshop;
 use crate::database_logic::database::DataBase;
 use egui::{Context, TextEdit, Ui};
 use egui_extras::DatePickerButton;
