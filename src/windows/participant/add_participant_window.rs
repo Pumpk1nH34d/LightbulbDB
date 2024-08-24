@@ -240,7 +240,7 @@ impl AddWindow {
                             support_ratio: (!self.support_ratio.0).then(|| self.support_ratio.1.clone()),
                             photo_permission: (!self.photo_permission.0).then_some(self.photo_permission.1),
                             private_hospital_preference: (!self.private_hospital_preference.0).then_some(self.private_hospital_preference.1),
-                            private_health_insurancer: (!self.private_health_insurer.0).then(|| self.private_health_insurer.1.clone()),
+                            private_health_insurer: (!self.private_health_insurer.0).then(|| self.private_health_insurer.1.clone()),
                             private_health_number: (!self.private_health_number.0).then(|| self.private_health_number.1.clone()),
                             communication_preference: (!self.communication_preference.0).then(|| self.communication_preference.1.clone()),
                             ndis_plan_number: (!self.ndis_plan_number.0).then(|| self.ndis_plan_number.1.clone()),
@@ -251,7 +251,7 @@ impl AddWindow {
                             plan_managed: (!self.plan_managed.0).then_some(self.plan_managed.1),
                             ndis_plan_end_date: (!self.ndis_plan_end_date.0).then_some(self.ndis_plan_end_date.1),
                         };
-                        self.db.insert_participant(new_participant).unwrap();
+                        self.db.add_participant(new_participant).unwrap();
                     };
                     if ui.button("🔃 Reset").clicked() {
                         self.reset = true;

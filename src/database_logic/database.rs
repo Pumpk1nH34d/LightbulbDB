@@ -1,4 +1,3 @@
-use crate::database_logic::data_structs::*;
 use rusqlite::{Connection, Result};
 
 pub struct DataBase {
@@ -80,7 +79,7 @@ impl DataBase {
 	support_ratio	TEXT,
 	photo_permission	INTEGER,
 	private_hospital_preference	INTEGER,
-	private_health_insurancer	TEXT,
+	private_health_insurer	TEXT,
 	private_health_number	TEXT,
 	communication_preference	TEXT,
 	ndis_plan_number	TEXT,
@@ -201,18 +200,18 @@ impl DataBase {
 	id	INTEGER NOT NULL UNIQUE,
 	first_name	TEXT NOT NULL,
 	last_name	TEXT NOT NULL,
+    phone	TEXT NOT NULL,
+    email	TEXT NOT NULL,
 	dob	TEXT,
 	address	TEXT,
 	suburb	TEXT,
 	postcode	TEXT,
 	first_aid	INTEGER,
-	first_aid_file	TEXT,
-	confidentiality_agreement	TEXT,
-	police_clearance	TEXT,
+	confidentiality_agreement	INTEGER,
+	police_clearance	INTEGER,
 	car_insurance	INTEGER,
 	other_qualifications	TEXT,
 	notes	TEXT,
-	phone	TEXT NOT NULL,
 	PRIMARY KEY(id AUTOINCREMENT)
 )",
             (),
@@ -232,7 +231,7 @@ impl DataBase {
 	contact_person_phone	TEXT,
 	venue_phone_number	TEXT,
 	price	TEXT,
-	notes	BLOB,
+	notes	TEXT,
 	PRIMARY KEY(id AUTOINCREMENT)
 )",
             (),
@@ -266,13 +265,7 @@ impl DataBase {
         )?;
         Ok(())
     }
-    pub fn new_support_worker(&self, sw: &SupportWorker) -> Result<()> {
-        self.connection.execute(
-            "INSERT INTO Support_Workers (first_name, last_name, dob, address, suburb, postcode, first_aid, first_aid_file, confidentiality_agreement, police_clearance, car_insurance, other_qualifications, notes, phone) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14)",
-            rusqlite::params![sw.first_name, sw.last_name, sw.dob, sw.address, sw.suburb, sw.postcode, sw.first_aid, sw.first_aid_file, sw.confidentiality_agreement, sw.police_clearance, sw.car_insurance, sw.other_qualifications, sw.notes, sw.phone],
-        )?;
-        Ok(())
-    }
+
     pub fn drop_db(&self) -> Result<()> {
         let tables = [
             "LineItems",

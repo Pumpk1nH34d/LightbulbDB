@@ -49,7 +49,7 @@ pub struct Participant {
     pub support_ratio: Option<String>,
     pub photo_permission: Option<bool>,
     pub private_hospital_preference: Option<bool>,
-    pub private_health_insurancer: Option<String>,
+    pub private_health_insurer: Option<String>,
     pub private_health_number: Option<String>,
     pub communication_preference: Option<String>,
     pub ndis_plan_number: Option<String>,
@@ -120,22 +120,24 @@ pub struct SupportCoordinator {
     pub company_email: Option<String>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Default, Clone)]
 pub struct SupportWorker {
+    pub id: Option<i32>,
     pub first_name: String,
     pub last_name: String,
-    pub dob: Option<String>,
+    pub phone: String,
+    pub email: String,
+    pub dob: Option<NaiveDate>,
     pub address: Option<String>,
     pub suburb: Option<String>,
     pub postcode: Option<String>,
     pub first_aid: Option<bool>,
-    pub first_aid_file: Option<String>,
-    pub confidentiality_agreement: Option<String>,
-    pub police_clearance: Option<String>,
+    pub confidentiality_agreement: Option<bool>,
+    pub police_clearance: Option<bool>,
     pub car_insurance: Option<bool>,
     pub other_qualifications: Option<String>,
     pub notes: Option<String>,
-    pub phone: String,
+
 }
 
 #[derive(Debug)]

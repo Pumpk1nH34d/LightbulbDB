@@ -99,7 +99,7 @@ impl EditWindow {
                 None => self.private_hospital_preference.0 = true,
                 Some(value) => self.private_hospital_preference = (false, value),
             }
-            match participant.private_health_insurancer {
+            match participant.private_health_insurer {
                 None => self.private_health_insurer.0 = true,
                 Some(value) => self.private_health_insurer = (false, value),
             }
@@ -155,7 +155,7 @@ impl EditWindow {
                         ui.label("Select a Participant to EDIT");
                     } else {
                         egui::ScrollArea::vertical().show(ui, |ui| {
-                            egui::Grid::new("edit_grid")
+                            egui::Grid::new("edit_participant")
                                 .num_columns(2)
                                 .spacing([40.0, 4.0])
                                 .striped(true)
@@ -416,7 +416,7 @@ impl EditWindow {
                                         .private_hospital_preference
                                         .0)
                                         .then_some(self.private_hospital_preference.1),
-                                    private_health_insurancer: (!self.private_health_insurer.0)
+                                    private_health_insurer: (!self.private_health_insurer.0)
                                         .then(|| self.private_health_insurer.1.clone()),
                                     private_health_number: (!self.private_health_number.0)
                                         .then(|| self.private_health_number.1.clone()),

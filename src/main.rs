@@ -81,7 +81,7 @@ impl Content {
         match self.current_view {
             Views::ParticipantsView => self.participants.ui(ui, ctx),
             Views::Workshops => self.workshops.ui(ui),
-            Views::SupportWorkers => self.support_workers.ui(ui),
+            Views::SupportWorkers => self.support_workers.ui(ui, ctx),
             Views::Venues => self.venues.ui(ui),
             Views::LineItems => self.line_items.ui(ui),
         }

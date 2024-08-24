@@ -11,6 +11,16 @@ impl DataBase {
         )?;
         Ok(())
     }
+
+    pub fn delete_support_worker(&self, id: i32) -> Result<()> {
+        self.connection.execute(
+            "DELETE FROM Support_Workers WHERE id = ?1;",
+            params![
+                id,
+            ],
+        )?;
+        Ok(())
+    }
 }
 
 
