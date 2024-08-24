@@ -1,14 +1,13 @@
+mod database_logic;
 mod views;
 mod windows;
-mod database_logic;
 
 use crate::views::{
-    participant::ParticipantsView, support_worker::SupportWorkersView,
-    venue::VenuesView, workshop::WorkshopsView,
+    participant::ParticipantsView, support_worker::SupportWorkersView, venue::VenuesView,
+    workshop::WorkshopsView,
 };
 use eframe::egui;
 use egui::Ui;
-
 
 #[derive(PartialEq)]
 enum Views {
@@ -52,7 +51,10 @@ impl Content {
                 "👱 Participants",
             );
             ui.selectable_value(&mut self.current_view, Views::Workshops, "🛠 Workshops");
-            ui.selectable_value(&mut self.current_view, Views::SupportWorkers,"📖 Support Workers",
+            ui.selectable_value(
+                &mut self.current_view,
+                Views::SupportWorkers,
+                "📖 Support Workers",
             );
             ui.selectable_value(&mut self.current_view, Views::Venues, "🏡 Venues");
         });
@@ -70,7 +72,7 @@ impl Content {
 
 fn main() -> eframe::Result<()> {
     let options = eframe::NativeOptions::default();
-    eframe::run_native( 
+    eframe::run_native(
         "LightBulbDB",
         options,
         Box::new(|_cc| Ok(Box::<Content>::default())),

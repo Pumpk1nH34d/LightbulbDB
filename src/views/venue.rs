@@ -1,16 +1,17 @@
 use crate::database_logic::data_structs::Venue;
 use crate::database_logic::database::DataBase;
-use crate::windows::venue::{
-    add_venue_window::AddWindow, edit_venue_window::EditWindow,
-};
+use crate::windows::venue::{add_venue_window::AddWindow, edit_venue_window::EditWindow, filter_venue_window::FilterWindow};
 use egui::{Context, Ui};
 
 #[derive(Default)]
 pub struct VenuesView {
     db: DataBase,
-    search_response: String,
+    
+    filter: String,
+    name_filter: String,
     add_window: AddWindow,
     edit_window: EditWindow,
+    filter_window: FilterWindow,
 
     selected_venue: Venue,
 }
@@ -24,15 +25,12 @@ impl VenuesView {
     }
 
     fn main_view(&mut self, ui: &mut Ui) {
-        let venues = self.db.get_all_venues();
+        let venues = if self.filter.is_empty() {
+            self.db.get_all_venues()
+        } else { 
+            self.db.get_filtered_venues(self.filter.clone())
+        };
         let size = venues.len();
-        ui.vertical_centered(|ui| {
-            ui.add(
-                egui::TextEdit::singleline(&mut self.search_response)
-                    .hint_text("🔍 Type to search..."),
-            );
-        });
-        ui.separator();
         egui::Grid::new("headings")
             .num_columns(5)
             .spacing([30.0, 4.0])
@@ -52,13 +50,7 @@ impl VenuesView {
                 .striped(true)
                 .show(ui, |ui| {
                     for index in 0..size {
-                        if ui
-                            .button(format!(
-                                "{}",
-                                &venues[index].name,
-                            ))
-                            .clicked()
-                        {
+                        if ui.button(format!("{}", &venues[index].name,)).clicked() {
                             self.selected_venue = venues[index].clone();
                         }
                         ui.label(&venues[index].address.clone().unwrap());
@@ -77,75 +69,58 @@ impl VenuesView {
             .show_inside(ui, |ui| {
                 if self.selected_venue.id.is_some() {
                     ui.vertical_centered(|ui| {
-                        ui.heading(format!(
-                            "{}",
-                            self.selected_venue.name
-                        ));
+                        ui.heading(format!("{}", self.selected_venue.name));
                     });
                     egui::ScrollArea::vertical().show(ui, |ui| {
-                        ui.label(format!(
-                            "Name: {}",
-                            self.selected_venue.name
-                        ));
+                        ui.label(format!("Name: {}", self.selected_venue.name));
                         ui.label(format!(
                             "address: {}",
-                            self.selected_venue
-                                .address.clone()
-                                .unwrap_or_default()
+                            self.selected_venue.address.clone().unwrap_or_default()
                         ));
                         ui.label(format!(
                             "suburb: {}",
-                            self.selected_venue
-                                .suburb.clone()
-                                .unwrap_or_default()
+                            self.selected_venue.suburb.clone().unwrap_or_default()
                         ));
                         ui.label(format!(
                             "postcode: {}",
-                            self.selected_venue
-                                .postcode.clone()
-                                .unwrap_or_default()
+                            self.selected_venue.postcode.clone().unwrap_or_default()
                         ));
                         ui.label(format!(
                             "state: {}",
-                            self.selected_venue
-                                .state.clone()
-                                .unwrap_or_default()
+                            self.selected_venue.state.clone().unwrap_or_default()
                         ));
                         ui.label(format!(
                             "description: {}",
-                            self.selected_venue
-                                .description.clone()
-                                .unwrap_or_default()
+                            self.selected_venue.description.clone().unwrap_or_default()
                         ));
                         ui.label(format!(
                             "contact_person_name: {}",
                             self.selected_venue
-                                .contact_person_name.clone()
+                                .contact_person_name
+                                .clone()
                                 .unwrap_or_default()
                         ));
                         ui.label(format!(
                             "contact_person_phone: {}",
                             self.selected_venue
-                                .contact_person_phone.clone()
+                                .contact_person_phone
+                                .clone()
                                 .unwrap_or_default()
                         ));
                         ui.label(format!(
                             "venue_phone_number: {}",
                             self.selected_venue
-                                .venue_phone_number.clone()
+                                .venue_phone_number
+                                .clone()
                                 .unwrap_or_default()
                         ));
                         ui.label(format!(
                             "price: {}",
-                            self.selected_venue
-                                .price.clone()
-                                .unwrap_or_default()
+                            self.selected_venue.price.clone().unwrap_or_default()
                         ));
                         ui.label(format!(
                             "notes: {}",
-                            self.selected_venue
-                                .notes.clone()
-                                .unwrap_or_default()
+                            self.selected_venue.notes.clone().unwrap_or_default()
                         ));
                     });
                 } else {
@@ -168,6 +143,9 @@ impl VenuesView {
                     if ui.button("✏ Edit").clicked() {
                         self.edit_window.open = !self.edit_window.open;
                     };
+                    if ui.button("⛭ Filter").clicked() {
+                        self.filter_window.open = !self.filter_window.open;
+                    };
                     if ui.button("RESET DB").clicked() {
                         self.db.drop_db().unwrap();
                         self.db.create_db().unwrap();
@@ -177,7 +155,7 @@ impl VenuesView {
     }
     fn load_windows_ui(&mut self, ui: &mut Ui, ctx: &Context) {
         self.add_window.ui(ui, ctx);
-        self.edit_window
-            .ui(ui, ctx, self.selected_venue.clone());
+        self.edit_window.ui(ui, ctx, self.selected_venue.clone());
+        self.filter = self.filter_window.ui(ui, ctx);
     }
 }

@@ -137,7 +137,6 @@ pub struct SupportWorker {
     pub car_insurance: Option<bool>,
     pub other_qualifications: Option<String>,
     pub notes: Option<String>,
-
 }
 
 #[derive(Debug, Default, Clone)]

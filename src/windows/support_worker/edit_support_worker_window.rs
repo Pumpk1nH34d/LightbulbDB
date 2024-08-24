@@ -1,4 +1,4 @@
-use crate::database_logic::data_structs::{SupportWorker};
+use crate::database_logic::data_structs::SupportWorker;
 use crate::database_logic::database::DataBase;
 use chrono::NaiveDate;
 use egui::{Context, TextEdit, Ui};
@@ -111,14 +111,11 @@ impl EditWindow {
                                 ui.end_row();
                                 ui.label("Phone Number:");
                                 ui.add(
-                                    TextEdit::singleline(&mut self.phone)
-                                        .hint_text("Phone Number"),
+                                    TextEdit::singleline(&mut self.phone).hint_text("Phone Number"),
                                 );
                                 ui.end_row();
                                 ui.label("Email:");
-                                ui.add(
-                                    TextEdit::singleline(&mut self.phone).hint_text("Email"),
-                                );
+                                ui.add(TextEdit::singleline(&mut self.phone).hint_text("Email"));
                                 ui.end_row();
                                 ui.label("Date of birth:");
                                 ui.horizontal(|ui| {
@@ -183,19 +180,13 @@ impl EditWindow {
                                 ui.end_row();
                                 ui.label("police_clearance:");
                                 ui.horizontal(|ui| {
-                                    ui.checkbox(
-                                        &mut self.police_clearance.1,
-                                        "police_clearance?",
-                                    );
+                                    ui.checkbox(&mut self.police_clearance.1, "police_clearance?");
                                     ui.checkbox(&mut self.police_clearance.0, "Null?");
                                 });
                                 ui.end_row();
                                 ui.label("car_insurance:");
                                 ui.horizontal(|ui| {
-                                    ui.checkbox(
-                                        &mut self.car_insurance.1,
-                                        "Photo car_insurance?",
-                                    );
+                                    ui.checkbox(&mut self.car_insurance.1, "Photo car_insurance?");
                                     ui.checkbox(&mut self.car_insurance.0, "Null?");
                                 });
                                 ui.end_row();
@@ -203,10 +194,8 @@ impl EditWindow {
                                 ui.horizontal(|ui| {
                                     ui.add_enabled_ui(!self.other_qualifications.0, |ui| {
                                         ui.add(
-                                            TextEdit::singleline(
-                                                &mut self.other_qualifications.1,
-                                            )
-                                            .hint_text("other_qualifications"),
+                                            TextEdit::singleline(&mut self.other_qualifications.1)
+                                                .hint_text("other_qualifications"),
                                         );
                                     });
                                     ui.checkbox(&mut self.other_qualifications.0, "Null?");
@@ -239,8 +228,7 @@ impl EditWindow {
                                 address: (!self.address.0).then(|| self.address.1.clone()),
                                 suburb: (!self.suburb.0).then(|| self.suburb.1.clone()),
                                 postcode: (!self.postcode.0).then(|| self.postcode.1.clone()),
-                                first_aid: (!self.first_aid.0)
-                                    .then(|| self.first_aid.1.clone()),
+                                first_aid: (!self.first_aid.0).then(|| self.first_aid.1.clone()),
                                 confidentiality_agreement: (!self.confidentiality_agreement.0)
                                     .then(|| self.confidentiality_agreement.1.clone()),
                                 police_clearance: (!self.police_clearance.0)

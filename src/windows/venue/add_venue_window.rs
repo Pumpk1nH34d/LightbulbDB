@@ -48,7 +48,6 @@ impl AddWindow {
                             ui.end_row();
                             ui.label("suburb:");
                             ui.horizontal(|ui| {
-                                
                                 ui.add_enabled_ui(!self.suburb.0, |ui| {
                                     ui.add(
                                         TextEdit::singleline(&mut self.suburb.1)
@@ -60,7 +59,6 @@ impl AddWindow {
                             ui.end_row();
                             ui.label("postcode:");
                             ui.horizontal(|ui| {
-                                
                                 ui.add_enabled_ui(!self.postcode.0, |ui| {
                                     ui.add(
                                         TextEdit::singleline(&mut self.postcode.1)
@@ -129,8 +127,7 @@ impl AddWindow {
                             ui.horizontal(|ui| {
                                 ui.add_enabled_ui(!self.price.0, |ui| {
                                     ui.add(
-                                        TextEdit::singleline(&mut self.price.1)
-                                            .hint_text("price"),
+                                        TextEdit::singleline(&mut self.price.1).hint_text("price"),
                                     );
                                 });
                                 ui.checkbox(&mut self.price.0, "Null?");
@@ -140,8 +137,7 @@ impl AddWindow {
                             ui.horizontal(|ui| {
                                 ui.add_enabled_ui(!self.notes.0, |ui| {
                                     ui.add(
-                                        TextEdit::singleline(&mut self.notes.1)
-                                            .hint_text("notes"),
+                                        TextEdit::singleline(&mut self.notes.1).hint_text("notes"),
                                     );
                                 });
                                 ui.checkbox(&mut self.notes.0, "Null?");
@@ -164,7 +160,8 @@ impl AddWindow {
                                 .then(|| self.contact_person_name.1.clone()),
                             contact_person_phone: (!self.contact_person_phone.0)
                                 .then(|| self.contact_person_phone.1.clone()),
-                            venue_phone_number: (!self.venue_phone_number.0).then(|| self.venue_phone_number.1.clone()),
+                            venue_phone_number: (!self.venue_phone_number.0)
+                                .then(|| self.venue_phone_number.1.clone()),
                             price: (!self.price.0).then(|| self.price.1.clone()),
                             notes: (!self.notes.0).then(|| self.notes.1.clone()),
                         };

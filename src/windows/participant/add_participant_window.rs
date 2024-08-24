@@ -1,8 +1,8 @@
 use crate::database_logic::data_structs::Participant;
+use crate::database_logic::database::DataBase;
 use chrono::NaiveDate;
 use egui::{Context, TextEdit, Ui};
 use egui_extras::DatePickerButton;
-use crate::database_logic::database::DataBase;
 
 #[derive(Default)]
 pub struct AddWindow {
@@ -51,23 +51,23 @@ impl AddWindow {
                         .show(ui, |ui| {
                             ui.label("First name:");
                             ui.add(
-                                TextEdit::singleline(&mut self.first_name)
-                                    .hint_text("First name"),
+                                TextEdit::singleline(&mut self.first_name).hint_text("First name"),
                             );
                             ui.end_row();
                             ui.label("Last name:");
                             ui.add(
-                                TextEdit::singleline(&mut self.last_name)
-                                    .hint_text("Last name"),
+                                TextEdit::singleline(&mut self.last_name).hint_text("Last name"),
                             );
                             ui.end_row();
                             ui.label("Date of birth:");
                             ui.horizontal(|ui| {
                                 ui.add_enabled_ui(!self.dob.0, |ui| {
-                                    ui.add(DatePickerButton::new(&mut self.dob.1).format("%d-%m-%Y")
-                                        .highlight_weekends(false)
-                                        .id_source("dob"))
-                                    ;
+                                    ui.add(
+                                        DatePickerButton::new(&mut self.dob.1)
+                                            .format("%d-%m-%Y")
+                                            .highlight_weekends(false)
+                                            .id_source("dob"),
+                                    );
                                 });
                                 ui.checkbox(&mut self.dob.0, "Null?");
                             });
@@ -86,7 +86,9 @@ impl AddWindow {
                             ui.label("Email:");
                             ui.horizontal(|ui| {
                                 ui.add_enabled_ui(!self.email.0, |ui| {
-                                    ui.add(TextEdit::singleline(&mut self.email.1).hint_text("Email"));
+                                    ui.add(
+                                        TextEdit::singleline(&mut self.email.1).hint_text("Email"),
+                                    );
                                 });
                                 ui.checkbox(&mut self.email.0, "Null?");
                             });
@@ -97,7 +99,10 @@ impl AddWindow {
                             ui.label("medical_notes:");
                             ui.horizontal(|ui| {
                                 ui.add_enabled_ui(!self.medical_notes.0, |ui| {
-                                    ui.add(TextEdit::singleline(&mut self.medical_notes.1).hint_text("medical_notes"));
+                                    ui.add(
+                                        TextEdit::singleline(&mut self.medical_notes.1)
+                                            .hint_text("medical_notes"),
+                                    );
                                 });
                                 ui.checkbox(&mut self.medical_notes.0, "Null?");
                             });
@@ -105,7 +110,10 @@ impl AddWindow {
                             ui.label("dietary_notes:");
                             ui.horizontal(|ui| {
                                 ui.add_enabled_ui(!self.dietary_notes.0, |ui| {
-                                    ui.add(TextEdit::singleline(&mut self.dietary_notes.1).hint_text("dietary_notes"));
+                                    ui.add(
+                                        TextEdit::singleline(&mut self.dietary_notes.1)
+                                            .hint_text("dietary_notes"),
+                                    );
                                 });
                                 ui.checkbox(&mut self.dietary_notes.0, "Null?");
                             });
@@ -113,7 +121,10 @@ impl AddWindow {
                             ui.label("physical_notes:");
                             ui.horizontal(|ui| {
                                 ui.add_enabled_ui(!self.physical_notes.0, |ui| {
-                                    ui.add(TextEdit::singleline(&mut self.physical_notes.1).hint_text("physical_notes"));
+                                    ui.add(
+                                        TextEdit::singleline(&mut self.physical_notes.1)
+                                            .hint_text("physical_notes"),
+                                    );
                                 });
                                 ui.checkbox(&mut self.physical_notes.0, "Null?");
                             });
@@ -121,7 +132,10 @@ impl AddWindow {
                             ui.label("other_notes:");
                             ui.horizontal(|ui| {
                                 ui.add_enabled_ui(!self.other_notes.0, |ui| {
-                                    ui.add(TextEdit::singleline(&mut self.other_notes.1).hint_text("other_notes"));
+                                    ui.add(
+                                        TextEdit::singleline(&mut self.other_notes.1)
+                                            .hint_text("other_notes"),
+                                    );
                                 });
                                 ui.checkbox(&mut self.other_notes.0, "Null?");
                             });
@@ -129,7 +143,10 @@ impl AddWindow {
                             ui.label("support_ratio:");
                             ui.horizontal(|ui| {
                                 ui.add_enabled_ui(!self.support_ratio.0, |ui| {
-                                    ui.add(TextEdit::singleline(&mut self.support_ratio.1).hint_text("support_ratio"));
+                                    ui.add(
+                                        TextEdit::singleline(&mut self.support_ratio.1)
+                                            .hint_text("support_ratio"),
+                                    );
                                 });
                                 ui.checkbox(&mut self.support_ratio.0, "Null?");
                             });
@@ -142,14 +159,20 @@ impl AddWindow {
                             ui.end_row();
                             ui.label("private_hospital_preference:");
                             ui.horizontal(|ui| {
-                                ui.checkbox(&mut self.private_hospital_preference.1, "private_hospital_preference?");
+                                ui.checkbox(
+                                    &mut self.private_hospital_preference.1,
+                                    "private_hospital_preference?",
+                                );
                                 ui.checkbox(&mut self.private_hospital_preference.0, "Null?");
                             });
                             ui.end_row();
                             ui.label("private_health_number:");
                             ui.horizontal(|ui| {
                                 ui.add_enabled_ui(!self.private_health_number.0, |ui| {
-                                    ui.add(TextEdit::singleline(&mut self.private_health_number.1).hint_text("private_health_number"));
+                                    ui.add(
+                                        TextEdit::singleline(&mut self.private_health_number.1)
+                                            .hint_text("private_health_number"),
+                                    );
                                 });
                                 ui.checkbox(&mut self.private_health_number.0, "Null?");
                             });
@@ -157,7 +180,10 @@ impl AddWindow {
                             ui.label("communication_preference:");
                             ui.horizontal(|ui| {
                                 ui.add_enabled_ui(!self.communication_preference.0, |ui| {
-                                    ui.add(TextEdit::singleline(&mut self.communication_preference.1).hint_text("communication_preference"));
+                                    ui.add(
+                                        TextEdit::singleline(&mut self.communication_preference.1)
+                                            .hint_text("communication_preference"),
+                                    );
                                 });
                                 ui.checkbox(&mut self.communication_preference.0, "Null?");
                             });
@@ -165,7 +191,10 @@ impl AddWindow {
                             ui.label("ndis_plan_number:");
                             ui.horizontal(|ui| {
                                 ui.add_enabled_ui(!self.ndis_plan_number.0, |ui| {
-                                    ui.add(TextEdit::singleline(&mut self.ndis_plan_number.1).hint_text("ndis_plan_number"));
+                                    ui.add(
+                                        TextEdit::singleline(&mut self.ndis_plan_number.1)
+                                            .hint_text("ndis_plan_number"),
+                                    );
                                 });
                                 ui.checkbox(&mut self.ndis_plan_number.0, "Null?");
                             });
@@ -173,10 +202,12 @@ impl AddWindow {
                             ui.label("ndis_plan_start_date:");
                             ui.horizontal(|ui| {
                                 ui.add_enabled_ui(!self.ndis_plan_start_date.0, |ui| {
-                                    ui.add(DatePickerButton::new(&mut self.ndis_plan_start_date.1).format("%d-%m-%Y")
-                                        .highlight_weekends(false)
-                                        .id_source("ndis_start"))
-                                    ;
+                                    ui.add(
+                                        DatePickerButton::new(&mut self.ndis_plan_start_date.1)
+                                            .format("%d-%m-%Y")
+                                            .highlight_weekends(false)
+                                            .id_source("ndis_start"),
+                                    );
                                 });
                                 ui.checkbox(&mut self.ndis_plan_start_date.0, "Null?");
                             });
@@ -184,10 +215,12 @@ impl AddWindow {
                             ui.label("ndis_plan_end_date:");
                             ui.horizontal(|ui| {
                                 ui.add_enabled_ui(!self.ndis_plan_end_date.0, |ui| {
-                                    ui.add(DatePickerButton::new(&mut self.ndis_plan_end_date.1).format("%d-%m-%Y")
-                                        .highlight_weekends(false)
-                                        .id_source("ndis_end"))
-                                    ;
+                                    ui.add(
+                                        DatePickerButton::new(&mut self.ndis_plan_end_date.1)
+                                            .format("%d-%m-%Y")
+                                            .highlight_weekends(false)
+                                            .id_source("ndis_end"),
+                                    );
                                 });
                                 ui.checkbox(&mut self.ndis_plan_end_date.0, "Null?");
                             });
@@ -200,7 +233,10 @@ impl AddWindow {
                             ui.end_row();
                             ui.label("capacity_building_funding:");
                             ui.horizontal(|ui| {
-                                ui.checkbox(&mut self.capacity_building_funding.1, "capacity_building_funding?");
+                                ui.checkbox(
+                                    &mut self.capacity_building_funding.1,
+                                    "capacity_building_funding?",
+                                );
                                 ui.checkbox(&mut self.capacity_building_funding.0, "Null?");
                             });
                             ui.end_row();
@@ -233,23 +269,36 @@ impl AddWindow {
                             postcode: (!self.postcode.0).then(|| self.postcode.1.clone()),
                             phone: (!self.phone.0).then(|| self.phone.1.clone()),
                             email: (!self.email.0).then(|| self.email.1.clone()),
-                            medical_notes: (!self.medical_notes.0).then(|| self.medical_notes.1.clone()),
-                            dietary_notes: (!self.dietary_notes.0).then(|| self.dietary_notes.1.clone()),
-                            physical_notes: (!self.physical_notes.0).then(|| self.physical_notes.1.clone()),
+                            medical_notes: (!self.medical_notes.0)
+                                .then(|| self.medical_notes.1.clone()),
+                            dietary_notes: (!self.dietary_notes.0)
+                                .then(|| self.dietary_notes.1.clone()),
+                            physical_notes: (!self.physical_notes.0)
+                                .then(|| self.physical_notes.1.clone()),
                             other_notes: (!self.other_notes.0).then(|| self.other_notes.1.clone()),
-                            support_ratio: (!self.support_ratio.0).then(|| self.support_ratio.1.clone()),
-                            photo_permission: (!self.photo_permission.0).then_some(self.photo_permission.1),
-                            private_hospital_preference: (!self.private_hospital_preference.0).then_some(self.private_hospital_preference.1),
-                            private_health_insurer: (!self.private_health_insurer.0).then(|| self.private_health_insurer.1.clone()),
-                            private_health_number: (!self.private_health_number.0).then(|| self.private_health_number.1.clone()),
-                            communication_preference: (!self.communication_preference.0).then(|| self.communication_preference.1.clone()),
-                            ndis_plan_number: (!self.ndis_plan_number.0).then(|| self.ndis_plan_number.1.clone()),
-                            ndis_plan_start_date: (!self.ndis_plan_start_date.0).then_some(self.ndis_plan_start_date.1),
+                            support_ratio: (!self.support_ratio.0)
+                                .then(|| self.support_ratio.1.clone()),
+                            photo_permission: (!self.photo_permission.0)
+                                .then_some(self.photo_permission.1),
+                            private_hospital_preference: (!self.private_hospital_preference.0)
+                                .then_some(self.private_hospital_preference.1),
+                            private_health_insurer: (!self.private_health_insurer.0)
+                                .then(|| self.private_health_insurer.1.clone()),
+                            private_health_number: (!self.private_health_number.0)
+                                .then(|| self.private_health_number.1.clone()),
+                            communication_preference: (!self.communication_preference.0)
+                                .then(|| self.communication_preference.1.clone()),
+                            ndis_plan_number: (!self.ndis_plan_number.0)
+                                .then(|| self.ndis_plan_number.1.clone()),
+                            ndis_plan_start_date: (!self.ndis_plan_start_date.0)
+                                .then_some(self.ndis_plan_start_date.1),
                             core_funding: (!self.core_funding.0).then_some(self.core_funding.1),
-                            capacity_building_funding: (!self.capacity_building_funding.0).then_some(self.capacity_building_funding.1),
+                            capacity_building_funding: (!self.capacity_building_funding.0)
+                                .then_some(self.capacity_building_funding.1),
                             self_managed: (!self.self_managed.0).then_some(self.self_managed.1),
                             plan_managed: (!self.plan_managed.0).then_some(self.plan_managed.1),
-                            ndis_plan_end_date: (!self.ndis_plan_end_date.0).then_some(self.ndis_plan_end_date.1),
+                            ndis_plan_end_date: (!self.ndis_plan_end_date.0)
+                                .then_some(self.ndis_plan_end_date.1),
                         };
                         self.db.add_participant(new_participant).unwrap();
                     };

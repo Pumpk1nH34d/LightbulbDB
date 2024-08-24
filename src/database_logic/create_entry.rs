@@ -80,7 +80,7 @@ impl DataBase {
         )?;
         Ok(())
     }
-    
+
     pub fn add_venue(&self, venue: Venue) -> Result<()> {
         self.connection.execute(
             "INSERT INTO Venues (name, address, suburb, postcode, state, description, contact_person_name, contact_person_phone, venue_phone_number, price, notes) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11)",

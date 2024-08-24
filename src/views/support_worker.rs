@@ -1,17 +1,18 @@
-use crate::database_logic::data_structs::{SupportWorker};
+use crate::database_logic::data_structs::SupportWorker;
 use crate::database_logic::database::DataBase;
 use crate::windows::support_worker::{
     add_support_worker_window::AddWindow, edit_support_worker_window::EditWindow,
+    filter_support_worker_window::FilterWindow
 };
 use egui::{Context, Ui};
 
 #[derive(Default)]
 pub struct SupportWorkersView {
     db: DataBase,
-    search_response: String,
+    filter: String,
     add_window: AddWindow,
     edit_window: EditWindow,
-
+    filter_window: FilterWindow,
     selected_support_worker: SupportWorker,
 }
 
@@ -24,15 +25,12 @@ impl SupportWorkersView {
     }
 
     fn main_view(&mut self, ui: &mut Ui) {
-        let support_workers = self.db.get_all_support_workers();
+        let support_workers = if self.filter.is_empty() {
+            self.db.get_all_support_workers()
+        } else {
+            self.db.get_filtered_support_workers(self.filter.clone())
+        };
         let size = support_workers.len();
-        ui.vertical_centered(|ui| {
-            ui.add(
-                egui::TextEdit::singleline(&mut self.search_response)
-                    .hint_text("🔍 Type to search..."),
-            );
-        });
-        ui.separator();
         egui::Grid::new("headings")
             .num_columns(5)
             .spacing([30.0, 4.0])
@@ -70,9 +68,7 @@ impl SupportWorkersView {
                         ui.label(&support_workers[index].email);
                         ui.label(match &support_workers[index].car_insurance {
                             None => String::new(),
-                            Some(value) => {
-                                value.to_string()
-                            }
+                            Some(value) => value.to_string(),
                         });
                         ui.end_row();
                     }
@@ -100,20 +96,10 @@ impl SupportWorkersView {
                         ));
                         ui.label(format!(
                             "dob: {}",
-                            self.selected_support_worker
-                                .dob
-                                .unwrap_or_default()
+                            self.selected_support_worker.dob.unwrap_or_default()
                         ));
-                        ui.label(format!(
-                            "phone: {}",
-                            self.selected_support_worker
-                                .phone
-                        ));
-                        ui.label(format!(
-                            "email: {}",
-                            self.selected_support_worker
-                                .email
-                        ));
+                        ui.label(format!("phone: {}", self.selected_support_worker.phone));
+                        ui.label(format!("email: {}", self.selected_support_worker.email));
                         ui.label(format!(
                             "address: {}",
                             self.selected_support_worker
@@ -123,7 +109,10 @@ impl SupportWorkersView {
                         ));
                         ui.label(format!(
                             "suburb: {}",
-                            self.selected_support_worker.suburb.clone().unwrap_or_default()
+                            self.selected_support_worker
+                                .suburb
+                                .clone()
+                                .unwrap_or_default()
                         ));
                         ui.label(format!(
                             "postcode: {}",
@@ -134,9 +123,7 @@ impl SupportWorkersView {
                         ));
                         ui.label(format!(
                             "first_aid: {}",
-                            self.selected_support_worker
-                                .first_aid
-                                .unwrap_or_default()
+                            self.selected_support_worker.first_aid.unwrap_or_default()
                         ));
                         ui.label(format!(
                             "confidentiality_agreement: {}",
@@ -170,7 +157,6 @@ impl SupportWorkersView {
                                 .clone()
                                 .unwrap_or_default()
                         ));
-
                     });
                 } else {
                     ui.vertical_centered(|ui| {
@@ -192,6 +178,9 @@ impl SupportWorkersView {
                     if ui.button("✏ Edit").clicked() {
                         self.edit_window.open = !self.edit_window.open;
                     };
+                    if ui.button("⛭ Filter").clicked() {
+                        self.filter_window.open = !self.filter_window.open;
+                    };
                     if ui.button("RESET DB").clicked() {
                         self.db.drop_db().unwrap();
                         self.db.create_db().unwrap();
@@ -203,5 +192,6 @@ impl SupportWorkersView {
         self.add_window.ui(ui, ctx);
         self.edit_window
             .ui(ui, ctx, self.selected_support_worker.clone());
+        self.filter = self.filter_window.ui(ui, ctx);
     }
 }

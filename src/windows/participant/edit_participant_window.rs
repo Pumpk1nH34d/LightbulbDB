@@ -10,6 +10,7 @@ pub struct EditWindow {
     pub db: DataBase,
     changed: bool,
     participant_check: Participant,
+    
     first_name: String,
     last_name: String,
     medicare: String,
@@ -144,7 +145,6 @@ impl EditWindow {
         egui::Window::new("Edit Participant")
             .open(&mut self.open)
             .show(ctx, |ui| {
-
                 if self.changed {
                     ui.label("DONE ✔");
                     ui.label("Reselect Participant to see changes.");
@@ -206,8 +206,7 @@ impl EditWindow {
                                 ui.end_row();
                                 ui.label("Medicare Number:");
                                 ui.add(
-                                    TextEdit::singleline(&mut self.medicare)
-                                        .hint_text("Medicare"),
+                                    TextEdit::singleline(&mut self.medicare).hint_text("Medicare"),
                                 );
                                 ui.end_row();
                                 ui.label("medical_notes:");
@@ -267,10 +266,7 @@ impl EditWindow {
                                 ui.end_row();
                                 ui.label("photo_permission:");
                                 ui.horizontal(|ui| {
-                                    ui.checkbox(
-                                        &mut self.photo_permission.1,
-                                        "Photo Permission?",
-                                    );
+                                    ui.checkbox(&mut self.photo_permission.1, "Photo Permission?");
                                     ui.checkbox(&mut self.photo_permission.0, "Null?");
                                 });
                                 ui.end_row();
@@ -280,20 +276,15 @@ impl EditWindow {
                                         &mut self.private_hospital_preference.1,
                                         "private_hospital_preference?",
                                     );
-                                    ui.checkbox(
-                                        &mut self.private_hospital_preference.0,
-                                        "Null?",
-                                    );
+                                    ui.checkbox(&mut self.private_hospital_preference.0, "Null?");
                                 });
                                 ui.end_row();
                                 ui.label("private_health_number:");
                                 ui.horizontal(|ui| {
                                     ui.add_enabled_ui(!self.private_health_number.0, |ui| {
                                         ui.add(
-                                            TextEdit::singleline(
-                                                &mut self.private_health_number.1,
-                                            )
-                                            .hint_text("private_health_number"),
+                                            TextEdit::singleline(&mut self.private_health_number.1)
+                                                .hint_text("private_health_number"),
                                         );
                                     });
                                     ui.checkbox(&mut self.private_health_number.0, "Null?");
@@ -327,12 +318,10 @@ impl EditWindow {
                                 ui.horizontal(|ui| {
                                     ui.add_enabled_ui(!self.ndis_plan_start_date.0, |ui| {
                                         ui.add(
-                                            DatePickerButton::new(
-                                                &mut self.ndis_plan_start_date.1,
-                                            )
-                                            .format("%d-%m-%Y")
-                                            .highlight_weekends(false)
-                                            .id_source("ndis_start"),
+                                            DatePickerButton::new(&mut self.ndis_plan_start_date.1)
+                                                .format("%d-%m-%Y")
+                                                .highlight_weekends(false)
+                                                .id_source("ndis_start"),
                                         );
                                     });
                                     ui.checkbox(&mut self.ndis_plan_start_date.0, "Null?");
@@ -342,12 +331,10 @@ impl EditWindow {
                                 ui.horizontal(|ui| {
                                     ui.add_enabled_ui(!self.ndis_plan_end_date.0, |ui| {
                                         ui.add(
-                                            DatePickerButton::new(
-                                                &mut self.ndis_plan_end_date.1,
-                                            )
-                                            .format("%d-%m-%Y")
-                                            .highlight_weekends(false)
-                                            .id_source("ndis_end"),
+                                            DatePickerButton::new(&mut self.ndis_plan_end_date.1)
+                                                .format("%d-%m-%Y")
+                                                .highlight_weekends(false)
+                                                .id_source("ndis_end"),
                                         );
                                     });
                                     ui.checkbox(&mut self.ndis_plan_end_date.0, "Null?");
@@ -409,9 +396,7 @@ impl EditWindow {
                                     .then(|| self.support_ratio.1.clone()),
                                 photo_permission: (!self.photo_permission.0)
                                     .then_some(self.photo_permission.1),
-                                private_hospital_preference: (!self
-                                    .private_hospital_preference
-                                    .0)
+                                private_hospital_preference: (!self.private_hospital_preference.0)
                                     .then_some(self.private_hospital_preference.1),
                                 private_health_insurer: (!self.private_health_insurer.0)
                                     .then(|| self.private_health_insurer.1.clone()),
@@ -423,14 +408,11 @@ impl EditWindow {
                                     .then(|| self.ndis_plan_number.1.clone()),
                                 ndis_plan_start_date: (!self.ndis_plan_start_date.0)
                                     .then_some(self.ndis_plan_start_date.1),
-                                core_funding: (!self.core_funding.0)
-                                    .then_some(self.core_funding.1),
+                                core_funding: (!self.core_funding.0).then_some(self.core_funding.1),
                                 capacity_building_funding: (!self.capacity_building_funding.0)
                                     .then_some(self.capacity_building_funding.1),
-                                self_managed: (!self.self_managed.0)
-                                    .then_some(self.self_managed.1),
-                                plan_managed: (!self.plan_managed.0)
-                                    .then_some(self.plan_managed.1),
+                                self_managed: (!self.self_managed.0).then_some(self.self_managed.1),
+                                plan_managed: (!self.plan_managed.0).then_some(self.plan_managed.1),
                                 ndis_plan_end_date: (!self.ndis_plan_end_date.0)
                                     .then_some(self.ndis_plan_end_date.1),
                             };
@@ -440,7 +422,9 @@ impl EditWindow {
                             self.changed = true;
                         };
                         if ui.button("❌ Delete").clicked() {
-                            self.db.delete_participant(self.participant_check.id.unwrap()).unwrap();
+                            self.db
+                                .delete_participant(self.participant_check.id.unwrap())
+                                .unwrap();
                             self.participant_check.id = None;
                             self.changed = true;
                         };

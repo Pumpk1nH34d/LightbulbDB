@@ -2,7 +2,6 @@ use crate::database_logic::data_structs::Venue;
 use crate::database_logic::database::DataBase;
 use egui::{Context, TextEdit, Ui};
 
-
 #[derive(Default)]
 pub struct EditWindow {
     pub open: bool,
@@ -105,7 +104,6 @@ impl EditWindow {
                                 ui.end_row();
                                 ui.label("suburb:");
                                 ui.horizontal(|ui| {
-
                                     ui.add_enabled_ui(!self.suburb.0, |ui| {
                                         ui.add(
                                             TextEdit::singleline(&mut self.suburb.1)
@@ -117,7 +115,6 @@ impl EditWindow {
                                 ui.end_row();
                                 ui.label("postcode:");
                                 ui.horizontal(|ui| {
-
                                     ui.add_enabled_ui(!self.postcode.0, |ui| {
                                         ui.add(
                                             TextEdit::singleline(&mut self.postcode.1)
@@ -216,12 +213,14 @@ impl EditWindow {
                                 suburb: (!self.suburb.0).then(|| self.suburb.1.clone()),
                                 postcode: (!self.postcode.0).then(|| self.postcode.1.clone()),
                                 state: (!self.state.0).then(|| self.state.1.clone()),
-                                description: (!self.description.0).then(|| self.description.1.clone()),
+                                description: (!self.description.0)
+                                    .then(|| self.description.1.clone()),
                                 contact_person_name: (!self.contact_person_name.0)
                                     .then(|| self.contact_person_name.1.clone()),
                                 contact_person_phone: (!self.contact_person_phone.0)
                                     .then(|| self.contact_person_phone.1.clone()),
-                                venue_phone_number: (!self.venue_phone_number.0).then(|| self.venue_phone_number.1.clone()),
+                                venue_phone_number: (!self.venue_phone_number.0)
+                                    .then(|| self.venue_phone_number.1.clone()),
                                 price: (!self.price.0).then(|| self.price.1.clone()),
                                 notes: (!self.notes.0).then(|| self.notes.1.clone()),
                             };
@@ -230,8 +229,7 @@ impl EditWindow {
                             self.changed = true;
                         };
                         if ui.button("❌ Delete").clicked() {
-                            self.db
-                                .delete_venues(self.venue_check.id.unwrap());
+                            self.db.delete_venues(self.venue_check.id.unwrap());
                             self.venue_check.id = None;
                             self.changed = true;
                         };

@@ -1,8 +1,8 @@
 use crate::database_logic::data_structs::SupportWorker;
+use crate::database_logic::database::DataBase;
 use chrono::NaiveDate;
 use egui::{Context, TextEdit, Ui};
 use egui_extras::DatePickerButton;
-use crate::database_logic::database::DataBase;
 
 #[derive(Default)]
 pub struct AddWindow {
@@ -39,36 +39,30 @@ impl AddWindow {
                         .show(ui, |ui| {
                             ui.label("First name:");
                             ui.add(
-                                TextEdit::singleline(&mut self.first_name)
-                                    .hint_text("First name"),
+                                TextEdit::singleline(&mut self.first_name).hint_text("First name"),
                             );
                             ui.end_row();
                             ui.label("Last name:");
                             ui.add(
-                                TextEdit::singleline(&mut self.last_name)
-                                    .hint_text("Last name"),
+                                TextEdit::singleline(&mut self.last_name).hint_text("Last name"),
                             );
 
                             ui.end_row();
                             ui.label("Phone Number:");
-                            ui.add(
-                                TextEdit::singleline(&mut self.phone)
-                                    .hint_text("Phone Number"),
-                            );
+                            ui.add(TextEdit::singleline(&mut self.phone).hint_text("Phone Number"));
                             ui.end_row();
                             ui.label("Email:");
-                            ui.add(
-                                TextEdit::singleline(&mut self.email)
-                                    .hint_text("Email"),
-                            );
+                            ui.add(TextEdit::singleline(&mut self.email).hint_text("Email"));
                             ui.end_row();
                             ui.label("Date of birth:");
                             ui.horizontal(|ui| {
                                 ui.add_enabled_ui(!self.dob.0, |ui| {
-                                    ui.add(DatePickerButton::new(&mut self.dob.1).format("%d-%m-%Y")
-                                        .highlight_weekends(false)
-                                        .id_source("dob"))
-                                    ;
+                                    ui.add(
+                                        DatePickerButton::new(&mut self.dob.1)
+                                            .format("%d-%m-%Y")
+                                            .highlight_weekends(false)
+                                            .id_source("dob"),
+                                    );
                                 });
                                 ui.checkbox(&mut self.dob.0, "Null?");
                             });
@@ -76,7 +70,10 @@ impl AddWindow {
                             ui.label("address:");
                             ui.horizontal(|ui| {
                                 ui.add_enabled_ui(!self.address.0, |ui| {
-                                    ui.add(TextEdit::singleline(&mut self.address.1).hint_text("address"));
+                                    ui.add(
+                                        TextEdit::singleline(&mut self.address.1)
+                                            .hint_text("address"),
+                                    );
                                 });
                                 ui.checkbox(&mut self.address.0, "Null?");
                             });
@@ -84,7 +81,10 @@ impl AddWindow {
                             ui.label("suburb:");
                             ui.horizontal(|ui| {
                                 ui.add_enabled_ui(!self.suburb.0, |ui| {
-                                    ui.add(TextEdit::singleline(&mut self.suburb.1).hint_text("suburb"));
+                                    ui.add(
+                                        TextEdit::singleline(&mut self.suburb.1)
+                                            .hint_text("suburb"),
+                                    );
                                 });
                                 ui.checkbox(&mut self.suburb.0, "Null?");
                             });
@@ -92,7 +92,10 @@ impl AddWindow {
                             ui.label("postcode:");
                             ui.horizontal(|ui| {
                                 ui.add_enabled_ui(!self.postcode.0, |ui| {
-                                    ui.add(TextEdit::singleline(&mut self.postcode.1).hint_text("postcode"));
+                                    ui.add(
+                                        TextEdit::singleline(&mut self.postcode.1)
+                                            .hint_text("postcode"),
+                                    );
                                 });
                                 ui.checkbox(&mut self.postcode.0, "Null?");
                             });
@@ -105,7 +108,10 @@ impl AddWindow {
                             ui.end_row();
                             ui.label("confidentiality_agreement:");
                             ui.horizontal(|ui| {
-                                ui.checkbox(&mut self.confidentiality_agreement.1, "confidentiality_agreement?");
+                                ui.checkbox(
+                                    &mut self.confidentiality_agreement.1,
+                                    "confidentiality_agreement?",
+                                );
                                 ui.checkbox(&mut self.confidentiality_agreement.0, "Null?");
                             });
                             ui.end_row();
@@ -124,7 +130,10 @@ impl AddWindow {
                             ui.label("other_qualifications:");
                             ui.horizontal(|ui| {
                                 ui.add_enabled_ui(!self.other_qualifications.0, |ui| {
-                                    ui.add(TextEdit::singleline(&mut self.other_qualifications.1).hint_text("other_qualifications"));
+                                    ui.add(
+                                        TextEdit::singleline(&mut self.other_qualifications.1)
+                                            .hint_text("other_qualifications"),
+                                    );
                                 });
                                 ui.checkbox(&mut self.other_qualifications.0, "Null?");
                             });
@@ -133,12 +142,13 @@ impl AddWindow {
                             ui.label("notes:");
                             ui.horizontal(|ui| {
                                 ui.add_enabled_ui(!self.notes.0, |ui| {
-                                    ui.add(TextEdit::singleline(&mut self.notes.1).hint_text("notes"));
+                                    ui.add(
+                                        TextEdit::singleline(&mut self.notes.1).hint_text("notes"),
+                                    );
                                 });
                                 ui.checkbox(&mut self.notes.0, "Null?");
                             });
                             ui.end_row();
-
                         });
                 });
                 ui.separator();
@@ -155,10 +165,13 @@ impl AddWindow {
                             suburb: (!self.suburb.0).then(|| self.suburb.1.clone()),
                             postcode: (!self.postcode.0).then(|| self.postcode.1.clone()),
                             first_aid: (!self.first_aid.0).then(|| self.first_aid.1),
-                            confidentiality_agreement: (!self.confidentiality_agreement.0).then(|| self.confidentiality_agreement.1),
-                            police_clearance: (!self.police_clearance.0).then(|| self.police_clearance.1),
+                            confidentiality_agreement: (!self.confidentiality_agreement.0)
+                                .then(|| self.confidentiality_agreement.1),
+                            police_clearance: (!self.police_clearance.0)
+                                .then(|| self.police_clearance.1),
                             car_insurance: (!self.car_insurance.0).then(|| self.car_insurance.1),
-                            other_qualifications: (!self.other_qualifications.0).then(|| self.other_qualifications.1.clone()),
+                            other_qualifications: (!self.other_qualifications.0)
+                                .then(|| self.other_qualifications.1.clone()),
                             notes: (!self.notes.0).then(|| self.notes.1.clone()),
                         };
                         self.db.add_support_worker(new_support_worker).unwrap();

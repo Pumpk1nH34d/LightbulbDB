@@ -2,16 +2,17 @@ use crate::database_logic::data_structs::Participant;
 use crate::database_logic::database::DataBase;
 use crate::windows::participant::{
     add_participant_window::AddWindow, edit_participant_window::EditWindow,
+    filter_participant_window::FilterWindow
 };
 use egui::{Context, Ui};
 
 #[derive(Default)]
 pub struct ParticipantsView {
     db: DataBase,
-    search_response: String,
+    filter: String,
     add_window: AddWindow,
     edit_window: EditWindow,
-
+    filter_window: FilterWindow,
     selected_participant: Participant,
 }
 
@@ -24,15 +25,12 @@ impl ParticipantsView {
     }
 
     fn main_view(&mut self, ui: &mut Ui) {
-        let participants = self.db.get_all_participant();
+        let participants = if self.filter.is_empty() {
+            self.db.get_all_participants()
+        } else {
+            self.db.get_filtered_participants(self.filter.clone())
+        };
         let size = participants.len();
-        ui.vertical_centered(|ui| {
-            ui.add(
-                egui::TextEdit::singleline(&mut self.search_response)
-                    .hint_text("🔍 Type to search..."),
-            );
-        });
-        ui.separator();
         egui::Grid::new("headings")
             .num_columns(5)
             .spacing([30.0, 4.0])
@@ -66,16 +64,18 @@ impl ParticipantsView {
                             Some(value) => value.format("%d-%m-%Y").to_string(),
                         });
                         ui.label(match participants[index].phone.clone() {
-                            None => {String::new()}
-                            Some(value) => {value.to_string()}
+                            None => String::new(),
+                            Some(value) => value.to_string(),
                         });
                         ui.label(match participants[index].email.clone() {
-                            None => {String::new()}
-                            Some(value) => {value.to_string()}
+                            None => String::new(),
+                            Some(value) => value.to_string(),
                         });
                         ui.label(match &participants[index].support_ratio {
-                            None => {String::new()}
-                            Some(value) => {format!("1:{}", value)}
+                            None => String::new(),
+                            Some(value) => {
+                                format!("1:{}", value)
+                            }
                         });
                         ui.end_row();
                     }
@@ -107,9 +107,7 @@ impl ParticipantsView {
                         ));
                         ui.label(format!(
                             "dob: {}",
-                            self.selected_participant
-                                .dob
-                                .unwrap_or_default()
+                            self.selected_participant.dob.unwrap_or_default()
                         ));
                         ui.label(format!(
                             "address: {}",
@@ -261,6 +259,9 @@ impl ParticipantsView {
                     if ui.button("✏ Edit").clicked() {
                         self.edit_window.open = !self.edit_window.open;
                     };
+                    if ui.button("⛭ Filter").clicked() {
+                        self.filter_window.open = !self.filter_window.open;
+                    };
                     if ui.button("RESET DB").clicked() {
                         self.db.drop_db().unwrap();
                         self.db.create_db().unwrap();
@@ -270,7 +271,7 @@ impl ParticipantsView {
     }
     fn load_windows_ui(&mut self, ui: &mut Ui, ctx: &Context) {
         self.add_window.ui(ui, ctx);
-        self.edit_window
-            .ui(ui, ctx, self.selected_participant.clone());
+        self.edit_window.ui(ui, ctx, self.selected_participant.clone());
+        self.filter = self.filter_window.ui(ui, ctx);
     }
 }
