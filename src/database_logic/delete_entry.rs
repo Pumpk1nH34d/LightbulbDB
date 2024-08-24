@@ -21,6 +21,16 @@ impl DataBase {
         )?;
         Ok(())
     }
+
+    pub fn delete_venues(&self, id: i32) -> Result<()> {
+        self.connection.execute(
+            "DELETE FROM Venues WHERE id = ?1;",
+            params![
+                id,
+            ],
+        )?;
+        Ok(())
+    }
 }
 
 
