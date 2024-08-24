@@ -163,9 +163,10 @@ pub struct WorkshopSupportWorker {
 
 #[derive(Debug)]
 pub struct Workshop {
+    pub id: Option<i32>,
     pub name: String,
     pub facilitator: i32,
     pub venue: i32,
-    pub start_date: String,
-    pub end_date: String,
+    pub start_date: NaiveDate,
+    pub end_date: NaiveDate,
 }

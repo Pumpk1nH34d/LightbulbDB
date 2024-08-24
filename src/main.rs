@@ -63,7 +63,7 @@ impl Content {
     fn main_view(&mut self, ui: &mut Ui, ctx: &egui::Context) {
         match self.current_view {
             Views::ParticipantsView => self.participants.ui(ui, ctx),
-            Views::Workshops => self.workshops.ui(ui),
+            Views::Workshops => self.workshops.ui(ui, ctx),
             Views::SupportWorkers => self.support_workers.ui(ui, ctx),
             Views::Venues => self.venues.ui(ui, ctx),
         }

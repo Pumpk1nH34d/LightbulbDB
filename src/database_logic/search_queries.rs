@@ -1,4 +1,4 @@
-use crate::database_logic::data_structs::{Participant, SupportWorker, Venue};
+use crate::database_logic::data_structs::{Participant, SupportWorker, Venue, Workshop};
 use crate::database_logic::database::DataBase;
 use chrono::NaiveDate;
 
@@ -214,6 +214,40 @@ impl DataBase {
                 venue_phone_number: row.get(9).unwrap_or(Some(String::new())),
                 price: row.get(10).unwrap_or(Some(String::new())),
                 notes: row.get(11).unwrap_or(Some(String::new())),
+            })
+        })
+            .unwrap()
+            .collect::<Result<Vec<_>, _>>()
+            .unwrap()
+    }
+
+    pub fn get_all_workshops(&self) -> Vec<Workshop> {
+        let mut stmt = self.connection.prepare("SELECT * FROM Workshops").unwrap();
+        stmt.query_map([], |row| {
+            Ok(Workshop {
+                id: row.get_unwrap(0),
+                name: row.get_unwrap(1),
+                facilitator: row.get(2).unwrap(),
+                venue: row.get(3).unwrap(),
+                start_date: row.get_unwrap::<_, String>(4).parse().unwrap(),
+                end_date: row.get_unwrap::<_, String>(5).parse().unwrap(),
+            })
+        })
+            .unwrap()
+            .collect::<Result<Vec<_>, _>>()
+            .unwrap()
+    }
+
+    pub fn get_filtered_workshops(&self, filter: String) -> Vec<Workshop> {
+        let mut stmt = self.connection.prepare(&format!("SELECT * FROM Workshops WHERE {}", filter)).unwrap();
+        stmt.query_map([], |row| {
+            Ok(Workshop {
+                id: row.get_unwrap(0),
+                name: row.get_unwrap(1),
+                facilitator: row.get(2).unwrap(),
+                venue: row.get(3).unwrap(),
+                start_date: row.get_unwrap::<_, String>(4).parse().unwrap(),
+                end_date: row.get_unwrap::<_, String>(5).parse().unwrap(),
             })
         })
             .unwrap()

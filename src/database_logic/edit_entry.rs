@@ -1,4 +1,4 @@
-use crate::database_logic::data_structs::{Participant, SupportWorker, Venue};
+use crate::database_logic::data_structs::{Participant, SupportWorker, Venue, Workshop};
 use crate::database_logic::database::DataBase;
 use rusqlite::{params, Result};
 
@@ -79,6 +79,21 @@ impl DataBase {
                 venue.price.map(|value| value.to_string()),
                 venue.notes.map(|value| value.to_string()),
                 venue.id
+            ],
+        ).unwrap();
+        Ok(())
+    }
+
+    pub fn edit_workshop(&self, workshop: Workshop) -> Result<()> {
+        self.connection.execute(
+            "UPDATE Venues SET name = ?1, facilitator = ?2, venue = ?3, start_date = ?4, end_date = ?5 WHERE id = ?6",
+            params![
+                workshop.name,
+                workshop.facilitator,
+                workshop.venue,
+                workshop.start_date.to_string(),
+                workshop.end_date.to_string(),
+                workshop.id
             ],
         ).unwrap();
         Ok(())

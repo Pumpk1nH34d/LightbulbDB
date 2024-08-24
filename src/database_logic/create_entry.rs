@@ -1,4 +1,4 @@
-use crate::database_logic::data_structs::{Participant, SupportWorker, Venue};
+use crate::database_logic::data_structs::{Participant, SupportWorker, Venue, Workshop};
 use crate::database_logic::database::DataBase;
 use rusqlite::{params, Result};
 
@@ -96,6 +96,20 @@ impl DataBase {
                 venue.venue_phone_number.map(|value| value.to_string()),
                 venue.price.map(|value| value.to_string()),
                 venue.notes.map(|value| value.to_string()),
+            ],
+        )?;
+        Ok(())
+    }
+
+    pub fn add_workshop(&self, workshop: Workshop) -> Result<()> {
+        self.connection.execute(
+            "INSERT INTO Venues (name, facilitator, venue, start_date, end_date) VALUES (?1, ?2, ?3, ?4, ?5)",
+            params![
+                workshop.name,
+                workshop.facilitator,
+                workshop.venue,
+                workshop.start_date.to_string(),
+                workshop.end_date.to_string()
             ],
         )?;
         Ok(())
