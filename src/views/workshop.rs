@@ -1,6 +1,6 @@
-use crate::database_logic::data_structs::Venue;
+use crate::database_logic::data_structs::Workshop;
 use crate::database_logic::database::DataBase;
-use crate::windows::venue::{add_venue_window::AddWindow, edit_venue_window::EditWindow, filter_venue_window::FilterWindow};
+use crate::windows::workshop::{add_workshop_window::AddWindow, edit_workshop_window::EditWindow, filter_workshop_window::FilterWindow};
 use egui::{Context, Ui};
 
 #[derive(Default)]
@@ -13,7 +13,7 @@ pub struct WorkshopsView {
     edit_window: EditWindow,
     filter_window: FilterWindow,
 
-    selected_venue: Venue,
+    selected_workshop: Workshop,
 }
 
 impl WorkshopsView {
@@ -25,38 +25,39 @@ impl WorkshopsView {
     }
 
     fn main_view(&mut self, ui: &mut Ui) {
-        let venues = if self.filter.is_empty() {
-            self.db.get_all_venues()
+        let workshops = if self.filter.is_empty() {
+            self.db.get_all_workshops()
         } else {
-            self.db.get_filtered_venues(self.filter.clone())
+            self.db.get_filtered_workshops(self.filter.clone())
         };
-        let size = venues.len();
+        let size = workshops.len();
         egui::Grid::new("headings")
             .num_columns(5)
             .spacing([30.0, 4.0])
             .striped(false)
             .show(ui, |ui| {
                 ui.label("Name");
-                ui.label("Address");
-                ui.label("Postcode");
-                ui.label("State");
-                ui.label("Price");
+                ui.label("Facilitator");
+                ui.label("Venue");
+                ui.label("Start Date");
+                ui.label("End Date");
                 ui.end_row();
             });
         egui::ScrollArea::vertical().show(ui, |ui| {
             egui::Grid::new("venue_results")
-                .num_columns(5)
+                .num_columns(6)
                 .spacing([30.0, 4.0])
                 .striped(true)
                 .show(ui, |ui| {
                     for index in 0..size {
-                        if ui.button(format!("{}", &venues[index].name,)).clicked() {
-                            self.selected_venue = venues[index].clone();
+                        if ui.button(format!("{}", &workshops[index].name,)).clicked() {
+                            self.selected_workshop = workshops[index].clone();
                         }
-                        ui.label(&venues[index].address.clone().unwrap());
-                        ui.label(&venues[index].postcode.clone().unwrap());
-                        ui.label(&venues[index].state.clone().unwrap());
-                        ui.label(&venues[index].price.clone().unwrap());
+                        ui.label(&workshops[index].name.clone());
+                        ui.label(&workshops[index].facilitator.clone().to_string());
+                        ui.label(&workshops[index].venue.clone().to_string());
+                        ui.label(&workshops[index].start_date.clone().to_string());
+                        ui.label(&workshops[index].end_date.clone().to_string());
                         ui.end_row();
                     }
                 });
@@ -67,65 +68,32 @@ impl WorkshopsView {
             .resizable(true)
             .default_width(150.0)
             .show_inside(ui, |ui| {
-                if self.selected_venue.id.is_some() {
+                if self.selected_workshop.id.is_some() {
                     ui.vertical_centered(|ui| {
-                        ui.heading(format!("{}", self.selected_venue.name));
+                        ui.heading(format!("{}", self.selected_workshop.name));
                     });
                     egui::ScrollArea::vertical().show(ui, |ui| {
-                        ui.label(format!("Name: {}", self.selected_venue.name));
+                        ui.label(format!("Name: {}", self.selected_workshop.name));
                         ui.label(format!(
-                            "address: {}",
-                            self.selected_venue.address.clone().unwrap_or_default()
+                            "Facilitator: {}",
+                            self.selected_workshop.facilitator.clone()
                         ));
                         ui.label(format!(
-                            "suburb: {}",
-                            self.selected_venue.suburb.clone().unwrap_or_default()
+                            "Venue: {}",
+                            self.selected_workshop.venue.clone()
                         ));
                         ui.label(format!(
-                            "postcode: {}",
-                            self.selected_venue.postcode.clone().unwrap_or_default()
+                            "start_date: {}",
+                            self.selected_workshop.start_date.clone()
                         ));
                         ui.label(format!(
-                            "state: {}",
-                            self.selected_venue.state.clone().unwrap_or_default()
-                        ));
-                        ui.label(format!(
-                            "description: {}",
-                            self.selected_venue.description.clone().unwrap_or_default()
-                        ));
-                        ui.label(format!(
-                            "contact_person_name: {}",
-                            self.selected_venue
-                                .contact_person_name
-                                .clone()
-                                .unwrap_or_default()
-                        ));
-                        ui.label(format!(
-                            "contact_person_phone: {}",
-                            self.selected_venue
-                                .contact_person_phone
-                                .clone()
-                                .unwrap_or_default()
-                        ));
-                        ui.label(format!(
-                            "venue_phone_number: {}",
-                            self.selected_venue
-                                .venue_phone_number
-                                .clone()
-                                .unwrap_or_default()
-                        ));
-                        ui.label(format!(
-                            "price: {}",
-                            self.selected_venue.price.clone().unwrap_or_default()
-                        ));
-                        ui.label(format!(
-                            "notes: {}",
-                            self.selected_venue.notes.clone().unwrap_or_default()
+                            "end_date: {}",
+                            self.selected_workshop.end_date.clone()
                         ));
                     });
                 } else {
                     ui.vertical_centered(|ui| {
-                        ui.heading("SELECT SUPPORT WORKER");
+                        ui.heading("SELECT WORKSHOP");
                     });
                 }
             });
@@ -155,7 +123,7 @@ impl WorkshopsView {
     }
     fn load_windows_ui(&mut self, ui: &mut Ui, ctx: &Context) {
         self.add_window.ui(ui, ctx);
-        self.edit_window.ui(ui, ctx, self.selected_venue.clone());
+        self.edit_window.ui(ui, ctx, self.selected_workshop.clone());
         self.filter = self.filter_window.ui(ui, ctx);
     }
 }

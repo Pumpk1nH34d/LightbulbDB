@@ -103,7 +103,7 @@ impl DataBase {
 
     pub fn add_workshop(&self, workshop: Workshop) -> Result<()> {
         self.connection.execute(
-            "INSERT INTO Venues (name, facilitator, venue, start_date, end_date) VALUES (?1, ?2, ?3, ?4, ?5)",
+            "INSERT INTO Workshops (name, facilitator, venue, start_date, end_date) VALUES (?1, ?2, ?3, ?4, ?5)",
             params![
                 workshop.name,
                 workshop.facilitator,

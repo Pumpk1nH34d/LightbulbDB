@@ -11,88 +11,54 @@ impl DataBase {
         }
     }
     pub fn create_db(&self) -> Result<()> {
-        self.connection.execute(
-            "
-    CREATE TABLE LineItems (
-	id	TEXT NOT NULL UNIQUE,
-	name	TEXT NOT NULL,
-	description	TEXT NOT NULL,
-	support_category	TEXT,
-	PRIMARY KEY(id))",
-            (),
-        )?;
+        /*
+                self.connection.execute(
+                    "
+            CREATE TABLE LineItems (
+            id	TEXT NOT NULL UNIQUE,
+            name	TEXT NOT NULL,
+            description	TEXT NOT NULL,
+            support_category	TEXT,
+            PRIMARY KEY(id))",
+                    (),
+                )?;
 
-        self.connection.execute(
-            "
-    CREATE TABLE Medical_Contacts (
-	id	INTEGER NOT NULL UNIQUE,
-	first_name	TEXT NOT NULL,
-	last_name	TEXT NOT NULL,
-	phone	INTEGER NOT NULL,
-	relationship	TEXT,
-	PRIMARY KEY(id AUTOINCREMENT))",
-            (),
-        )?;
+                self.connection.execute(
+                    "
+            CREATE TABLE Medical_Contacts (
+            id	INTEGER NOT NULL UNIQUE,
+            first_name	TEXT NOT NULL,
+            last_name	TEXT NOT NULL,
+            phone	INTEGER NOT NULL,
+            relationship	TEXT,
+            PRIMARY KEY(id AUTOINCREMENT))",
+                    (),
+                )?;
 
-        self.connection.execute(
-            "
-    CREATE TABLE Parents (
-	id	INTEGER NOT NULL UNIQUE,
-	first_name	TEXT NOT NULL,
-	last_name	TEXT NOT NULL,
-	relationship	TEXT NOT NULL,
-	phone_number	TEXT NOT NULL,
-	communication_preference	TEXT,
-	PRIMARY KEY(id AUTOINCREMENT)
-)",
-            (),
-        )?;
+                self.connection.execute(
+                    "
+            CREATE TABLE Parents (
+            id	INTEGER NOT NULL UNIQUE,
+            first_name	TEXT NOT NULL,
+            last_name	TEXT NOT NULL,
+            relationship	TEXT NOT NULL,
+            phone_number	TEXT NOT NULL,
+            communication_preference	TEXT,
+            PRIMARY KEY(id AUTOINCREMENT)
+        )",
+                    (),
+                )?;
 
-        self.connection.execute(
-            "
-    CREATE TABLE Participant__Medical_Contact (
-	participant	INTEGER NOT NULL,
-	medical_contact	INTEGER NOT NULL,
-	FOREIGN KEY(medical_contact) REFERENCES Medical_Contacts(id),
-	FOREIGN KEY(participant) REFERENCES Participants(id)
-)",
-            (),
-        )?;
-
-        self.connection.execute(
-            "
-    CREATE TABLE Participants (
-	id	INTEGER NOT NULL UNIQUE,
-	first_name	TEXT NOT NULL,
-	last_name	TEXT NOT NULL,
-	medicare_number	TEXT NOT NULL,
-	dob	INTEGER,
-	address	TEXT,
-	suburb	TEXT,
-	postcode	TEXT,
-	phone	TEXT,
-	email	TEXT,
-	medical_notes	TEXT,
-	dietary_notes	TEXT,
-	physical_notes	TEXT,
-	other_notes	TEXT,
-	support_ratio	TEXT,
-	photo_permission	INTEGER,
-	private_hospital_preference	INTEGER,
-	private_health_insurer	TEXT,
-	private_health_number	TEXT,
-	communication_preference	TEXT,
-	ndis_plan_number	TEXT,
-	ndis_plan_start_date	TEXT,
-	core_funding	INTEGER,
-	capacity_building_funding	INTEGER,
-	self_managed	INTEGER,
-	plan_managed	INTEGER,
-	ndis_plan_end_date	TEXT,
-	PRIMARY KEY(id AUTOINCREMENT)
-)",
-            (),
-        )?;
+                self.connection.execute(
+                    "
+            CREATE TABLE Participant__Medical_Contact (
+            participant	INTEGER NOT NULL,
+            medical_contact	INTEGER NOT NULL,
+            FOREIGN KEY(medical_contact) REFERENCES Medical_Contacts(id),
+            FOREIGN KEY(participant) REFERENCES Participants(id)
+        )",
+                    (),
+                )?;
 
         self.connection.execute(
             "
@@ -193,7 +159,42 @@ impl DataBase {
 )",
             (),
         )?;
-
+*/
+        self.connection.execute(
+            "
+    CREATE TABLE Participants (
+	id	INTEGER NOT NULL UNIQUE,
+	first_name	TEXT NOT NULL,
+	last_name	TEXT NOT NULL,
+	medicare_number	TEXT NOT NULL,
+	dob	INTEGER,
+	address	TEXT,
+	suburb	TEXT,
+	postcode	TEXT,
+	phone	TEXT,
+	email	TEXT,
+	medical_notes	TEXT,
+	dietary_notes	TEXT,
+	physical_notes	TEXT,
+	other_notes	TEXT,
+	support_ratio	TEXT,
+	photo_permission	INTEGER,
+	private_hospital_preference	INTEGER,
+	private_health_insurer	TEXT,
+	private_health_number	TEXT,
+	communication_preference	TEXT,
+	ndis_plan_number	TEXT,
+	ndis_plan_start_date	TEXT,
+	core_funding	INTEGER,
+	capacity_building_funding	INTEGER,
+	self_managed	INTEGER,
+	plan_managed	INTEGER,
+	ndis_plan_end_date	TEXT,
+	PRIMARY KEY(id AUTOINCREMENT)
+)",
+            (),
+        )?;
+        
         self.connection.execute(
             "
     CREATE TABLE Support_Workers (
@@ -250,6 +251,16 @@ impl DataBase {
 
         self.connection.execute(
             "
+    CREATE TABLE Workshop__Participants (
+	workshop	INTEGER NOT NULL,
+	participant	INTEGER NOT NULL,
+	FOREIGN KEY(participant) REFERENCES Participants(id),
+	FOREIGN KEY(workshop) REFERENCES Workshops(id)
+)",
+            (),
+        )?;
+        self.connection.execute(
+            "
     CREATE TABLE Workshops (
 	id	INTEGER NOT NULL UNIQUE,
 	name	TEXT NOT NULL,
@@ -268,11 +279,12 @@ impl DataBase {
 
     pub fn drop_db(&self) -> Result<()> {
         let tables = [
+            /*
             "LineItems",
             "Medical_Contacts",
             "Parents",
             "Participant__Medical_Contact",
-            "Participants",
+            
             "Participants__LineItems",
             "Participants__Parents",
             "Participants__Plan_Managers",
@@ -280,10 +292,12 @@ impl DataBase {
             "Participants_Dislike",
             "Participants_Likes",
             "Plan_Managers",
-            "Support_Coordinators",
+            "Support_Coordinators", */
+            "Participants",
             "Support_Workers",
             "Venues",
             "Workshop__Support_Worker",
+            "Workshop__Participants",
             "Workshops",
         ];
         for table in tables.iter() {

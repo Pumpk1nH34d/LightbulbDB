@@ -1,5 +1,5 @@
 use chrono::NaiveDate;
-
+/*
 #[derive(Debug)]
 pub struct LineItem {
     pub name: String,
@@ -28,37 +28,6 @@ pub struct Parent {
 pub struct ParticipantMedicalContact {
     pub participant: i32,
     pub medical_contact: i32,
-}
-
-#[derive(Debug, Default, Clone)]
-pub struct Participant {
-    pub id: Option<i32>,
-    pub first_name: String,
-    pub last_name: String,
-    pub medicare_number: String,
-    pub dob: Option<NaiveDate>,
-    pub address: Option<String>,
-    pub suburb: Option<String>,
-    pub postcode: Option<String>,
-    pub phone: Option<String>,
-    pub email: Option<String>,
-    pub medical_notes: Option<String>,
-    pub dietary_notes: Option<String>,
-    pub physical_notes: Option<String>,
-    pub other_notes: Option<String>,
-    pub support_ratio: Option<String>,
-    pub photo_permission: Option<bool>,
-    pub private_hospital_preference: Option<bool>,
-    pub private_health_insurer: Option<String>,
-    pub private_health_number: Option<String>,
-    pub communication_preference: Option<String>,
-    pub ndis_plan_number: Option<String>,
-    pub ndis_plan_start_date: Option<NaiveDate>,
-    pub core_funding: Option<bool>,
-    pub capacity_building_funding: Option<bool>,
-    pub self_managed: Option<bool>,
-    pub plan_managed: Option<bool>,
-    pub ndis_plan_end_date: Option<NaiveDate>,
 }
 
 #[derive(Debug)]
@@ -119,6 +88,38 @@ pub struct SupportCoordinator {
     pub email: Option<String>,
     pub company_email: Option<String>,
 }
+*/
+
+#[derive(Debug, Default, Clone)]
+pub struct Participant {
+    pub id: Option<i32>,
+    pub first_name: String,
+    pub last_name: String,
+    pub medicare_number: String,
+    pub dob: Option<NaiveDate>,
+    pub address: Option<String>,
+    pub suburb: Option<String>,
+    pub postcode: Option<String>,
+    pub phone: Option<String>,
+    pub email: Option<String>,
+    pub medical_notes: Option<String>,
+    pub dietary_notes: Option<String>,
+    pub physical_notes: Option<String>,
+    pub other_notes: Option<String>,
+    pub support_ratio: Option<String>,
+    pub photo_permission: Option<bool>,
+    pub private_hospital_preference: Option<bool>,
+    pub private_health_insurer: Option<String>,
+    pub private_health_number: Option<String>,
+    pub communication_preference: Option<String>,
+    pub ndis_plan_number: Option<String>,
+    pub ndis_plan_start_date: Option<NaiveDate>,
+    pub core_funding: Option<bool>,
+    pub capacity_building_funding: Option<bool>,
+    pub self_managed: Option<bool>,
+    pub plan_managed: Option<bool>,
+    pub ndis_plan_end_date: Option<NaiveDate>,
+}
 
 #[derive(Debug, Default, Clone)]
 pub struct SupportWorker {
@@ -157,11 +158,17 @@ pub struct Venue {
 
 #[derive(Debug)]
 pub struct WorkshopSupportWorker {
-    pub workshop: i32,
-    pub support_worker: i32,
+    pub workshop: Workshop,
+    pub support_worker: SupportWorker,
 }
 
 #[derive(Debug)]
+pub struct WorkshopParticipant {
+    pub workshop: Workshop,
+    pub participant: Participant,
+}
+
+#[derive(Debug, Clone, Default)]
 pub struct Workshop {
     pub id: Option<i32>,
     pub name: String,
