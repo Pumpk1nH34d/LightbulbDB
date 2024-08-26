@@ -1,4 +1,3 @@
-use std::fmt::format;
 use crate::database_logic::data_structs::{SupportWorker, Venue, Workshop};
 use crate::database_logic::database::DataBase;
 use chrono::NaiveDate;
@@ -6,7 +5,7 @@ use egui::{Context, TextEdit, Ui};
 use egui_extras::DatePickerButton;
 
 #[derive(Default)]
-enum ForeignView {
+pub enum ForeignView {
     #[default]
     Facilitator,
     Venue,
@@ -29,7 +28,7 @@ pub struct AddWindow {
 }
 
 impl AddWindow {
-    pub fn ui(&mut self, ui: &mut Ui, ctx: &Context) {
+    pub fn ui(&mut self, ctx: &Context) {
         egui::Window::new("Create Workshop")
             .open(&mut self.open)
             .max_height(110.0)
@@ -55,7 +54,7 @@ impl AddWindow {
                                                     self.db.get_all_support_workers()
                                                 } else {
                                                     self.db.get_filtered_support_workers(format!(
-                                                        "first_name = '{}'",
+                                                        "first_name LIKE '%{}%'",
                                                         self.facilitator_filter.clone()
                                                     ))
                                                 };
@@ -93,7 +92,7 @@ impl AddWindow {
                                                     self.db.get_all_venues()
                                                 } else {
                                                     self.db.get_filtered_venues(format!(
-                                                        "name = '{}'",
+                                                        "name LIKE '%{}%'",
                                                         self.venue_filter.clone()
                                                     ))
                                                 };
@@ -110,15 +109,6 @@ impl AddWindow {
                                                     {
                                                         self.venue = venues[index].clone();
                                                     }
-                                                    /*
-                                                    ui.label(&workshops[index].first_name.clone());
-                                                    ui.label(&workshops[index].first_name.clone());
-                                                    ui.label(&workshops[index].facilitator.clone().to_string());
-                                                    ui.label(&workshops[index].venue.clone().to_string());
-                                                    ui.label(&workshops[index].start_date.clone().to_string());
-                                                    ui.label(&workshops[index].end_date.clone().to_string());
-
-                                                    */
                                                     ui.end_row();
                                                 }
                                             }

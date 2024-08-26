@@ -14,11 +14,10 @@ impl DataBase {
                 first_name: row.get_unwrap(1),
                 last_name: row.get_unwrap(2),
                 medicare_number: row.get_unwrap(3),
-                dob: Some(
-                    row.get_unwrap::<_, String>(4)
-                        .parse::<NaiveDate>()
-                        .unwrap_or_default(),
-                ),
+                dob: match row.get::<_, String>(4) {
+                    Ok(value) => {Some(value.parse::<NaiveDate>().unwrap())}
+                    Err(_) => {None}
+                },
                 address: row.get(5).unwrap_or(Some(String::new())),
                 suburb: row.get(6).unwrap_or(Some(String::new())),
                 postcode: row.get(7).unwrap_or(Some(String::new())),
@@ -38,20 +37,18 @@ impl DataBase {
                 private_health_number: row.get(18).unwrap_or(Some(String::new())),
                 communication_preference: row.get(19).unwrap_or(Some(String::new())),
                 ndis_plan_number: row.get(20).unwrap_or(Some(String::new())),
-                ndis_plan_start_date: Some(
-                    row.get_unwrap::<_, String>(21)
-                        .parse::<NaiveDate>()
-                        .unwrap_or_default(),
-                ),
+                ndis_plan_start_date: match row.get::<_, String>(21) {
+                    Ok(value) => {Some(value.parse::<NaiveDate>().unwrap())}
+                    Err(_) => {None}
+                },
                 core_funding: row.get(22).unwrap_or(Some(false)),
                 capacity_building_funding: row.get(23).unwrap_or(Some(false)),
                 self_managed: row.get(24).unwrap_or(Some(false)),
                 plan_managed: row.get(25).unwrap_or(Some(false)),
-                ndis_plan_end_date: Some(
-                    row.get_unwrap::<_, String>(26)
-                        .parse::<NaiveDate>()
-                        .unwrap_or_default(),
-                ),
+                ndis_plan_end_date: match row.get::<_, String>(26) {
+                    Ok(value) => {Some(value.parse::<NaiveDate>().unwrap())}
+                    Err(_) => {None}
+                },
             })
         })
         .unwrap()
@@ -67,11 +64,10 @@ impl DataBase {
                 first_name: row.get_unwrap(1),
                 last_name: row.get_unwrap(2),
                 medicare_number: row.get_unwrap(3),
-                dob: Some(
-                    row.get_unwrap::<_, String>(4)
-                        .parse::<NaiveDate>()
-                        .unwrap_or_default(),
-                ),
+                dob: match row.get::<_, String>(4) {
+                    Ok(value) => {Some(value.parse::<NaiveDate>().unwrap())}
+                    Err(_) => {None}
+                },
                 address: row.get(5).unwrap_or(Some(String::new())),
                 suburb: row.get(6).unwrap_or(Some(String::new())),
                 postcode: row.get(7).unwrap_or(Some(String::new())),
@@ -91,20 +87,18 @@ impl DataBase {
                 private_health_number: row.get(18).unwrap_or(Some(String::new())),
                 communication_preference: row.get(19).unwrap_or(Some(String::new())),
                 ndis_plan_number: row.get(20).unwrap_or(Some(String::new())),
-                ndis_plan_start_date: Some(
-                    row.get_unwrap::<_, String>(21)
-                        .parse::<NaiveDate>()
-                        .unwrap_or_default(),
-                ),
+                ndis_plan_start_date: match row.get::<_, String>(21) {
+                    Ok(value) => {Some(value.parse::<NaiveDate>().unwrap())}
+                    Err(_) => {None}
+                },
                 core_funding: row.get(22).unwrap_or(Some(false)),
                 capacity_building_funding: row.get(23).unwrap_or(Some(false)),
                 self_managed: row.get(24).unwrap_or(Some(false)),
                 plan_managed: row.get(25).unwrap_or(Some(false)),
-                ndis_plan_end_date: Some(
-                    row.get_unwrap::<_, String>(26)
-                        .parse::<NaiveDate>()
-                        .unwrap_or_default(),
-                ),
+                ndis_plan_end_date: match row.get::<_, String>(26) {
+                    Ok(value) => {Some(value.parse::<NaiveDate>().unwrap())}
+                    Err(_) => {None}
+                },
             })
         })
             .unwrap()
@@ -124,20 +118,19 @@ impl DataBase {
                 last_name: row.get_unwrap(2),
                 phone: row.get(3).unwrap(),
                 email: row.get(4).unwrap(),
-                dob: Some(
-                    row.get_unwrap::<_, String>(4)
-                        .parse::<NaiveDate>()
-                        .unwrap_or_default(),
-                ),
-                address: row.get(5).unwrap_or(Some(String::new())),
-                suburb: row.get(6).unwrap_or(Some(String::new())),
-                postcode: row.get(7).unwrap_or(Some(String::new())),
-                first_aid: row.get(8).unwrap_or(Some(false)),
-                confidentiality_agreement: row.get(9).unwrap_or(Some(false)),
-                police_clearance: row.get(10).unwrap_or(Some(false)),
-                car_insurance: row.get(11).unwrap_or(Some(false)),
-                other_qualifications: row.get(12).unwrap_or(Some(String::new())),
-                notes: row.get(13).unwrap_or(Some(String::new())),
+                dob: match row.get::<_, String>(5) {
+                    Ok(value) => {Some(value.parse::<NaiveDate>().unwrap())}
+                    Err(_) => {None}
+                },
+                address: row.get(6).unwrap_or(Some(String::new())),
+                suburb: row.get(7).unwrap_or(Some(String::new())),
+                postcode: row.get(8).unwrap_or(Some(String::new())),
+                first_aid: row.get(9).unwrap_or(Some(false)),
+                confidentiality_agreement: row.get(10).unwrap_or(Some(false)),
+                police_clearance: row.get(11).unwrap_or(Some(false)),
+                car_insurance: row.get(12).unwrap_or(Some(false)),
+                other_qualifications: row.get(13).unwrap_or(Some(String::new())),
+                notes: row.get(14).unwrap_or(Some(String::new())),
             })
         })
         .unwrap()
@@ -229,8 +222,12 @@ impl DataBase {
                 name: row.get_unwrap(1),
                 facilitator: row.get(2).unwrap(),
                 venue: row.get(3).unwrap(),
-                start_date: row.get_unwrap::<_, String>(4).parse().unwrap(),
-                end_date: row.get_unwrap::<_, String>(5).parse().unwrap(),
+                start_date: row.get_unwrap::<_, String>(4)
+                    .parse::<NaiveDate>()
+                    .unwrap_or_default(),
+                end_date: row.get_unwrap::<_, String>(5)
+                    .parse::<NaiveDate>()
+                    .unwrap_or_default(),
             })
         })
             .unwrap()

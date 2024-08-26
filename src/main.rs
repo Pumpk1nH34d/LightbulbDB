@@ -8,6 +8,7 @@ use crate::views::{
 };
 use eframe::egui;
 use egui::Ui;
+use crate::database_logic::database::DataBase;
 
 #[derive(PartialEq)]
 enum Views {
@@ -25,6 +26,7 @@ impl Default for Views {
 
 #[derive(Default)]
 struct Content {
+    db: DataBase,
     current_view: Views,
     participants: ParticipantsView,
     workshops: WorkshopsView,
@@ -57,6 +59,11 @@ impl Content {
                 "📖 Support Workers",
             );
             ui.selectable_value(&mut self.current_view, Views::Venues, "🏡 Venues");
+            if ui.button("POPULATE").clicked() {
+                self.db.drop_db().unwrap();
+                self.db.create_db().unwrap();
+                self.db.populate_database().unwrap();
+            }
         });
     }
 

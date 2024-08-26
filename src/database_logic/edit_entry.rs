@@ -86,7 +86,7 @@ impl DataBase {
 
     pub fn edit_workshop(&self, workshop: Workshop) -> Result<()> {
         self.connection.execute(
-            "UPDATE Venues SET name = ?1, facilitator = ?2, venue = ?3, start_date = ?4, end_date = ?5 WHERE id = ?6",
+            "UPDATE Workshops SET name = ?1, facilitator = ?2, venue = ?3, start_date = ?4, end_date = ?5 WHERE id = ?6",
             params![
                 workshop.name,
                 workshop.facilitator,

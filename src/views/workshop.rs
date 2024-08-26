@@ -45,7 +45,7 @@ impl WorkshopsView {
             });
         egui::ScrollArea::vertical().show(ui, |ui| {
             egui::Grid::new("venue_results")
-                .num_columns(6)
+                .num_columns(4)
                 .spacing([30.0, 4.0])
                 .striped(true)
                 .show(ui, |ui| {
@@ -54,8 +54,6 @@ impl WorkshopsView {
                             self.selected_workshop = workshops[index].clone();
                         }
                         ui.label(&workshops[index].name.clone());
-                        ui.label(&workshops[index].facilitator.clone().to_string());
-                        ui.label(&workshops[index].venue.clone().to_string());
                         ui.label(&workshops[index].start_date.clone().to_string());
                         ui.label(&workshops[index].end_date.clone().to_string());
                         ui.end_row();
@@ -74,14 +72,6 @@ impl WorkshopsView {
                     });
                     egui::ScrollArea::vertical().show(ui, |ui| {
                         ui.label(format!("Name: {}", self.selected_workshop.name));
-                        ui.label(format!(
-                            "Facilitator: {}",
-                            self.selected_workshop.facilitator.clone()
-                        ));
-                        ui.label(format!(
-                            "Venue: {}",
-                            self.selected_workshop.venue.clone()
-                        ));
                         ui.label(format!(
                             "start_date: {}",
                             self.selected_workshop.start_date.clone()
@@ -122,7 +112,7 @@ impl WorkshopsView {
             });
     }
     fn load_windows_ui(&mut self, ui: &mut Ui, ctx: &Context) {
-        self.add_window.ui(ui, ctx);
+        self.add_window.ui(ctx);
         self.edit_window.ui(ui, ctx, self.selected_workshop.clone());
         self.filter = self.filter_window.ui(ui, ctx);
     }
