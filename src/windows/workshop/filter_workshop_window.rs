@@ -21,6 +21,7 @@ pub struct FilterWindow {
     changed: bool,
     workshop_check: Workshop,
 
+    filter: String,
 
     name: String,
     facilitator: SupportWorker,
@@ -32,15 +33,7 @@ pub struct FilterWindow {
 }
 
 impl FilterWindow {
-    pub fn ui(&mut self, _ui: &mut Ui, ctx: &Context, workshop: Workshop) {
-        if self.workshop_check.id != workshop.id {
-            self.workshop_check = workshop.clone();
-            self.facilitator = self.db.get_filtered_support_workers(format!("id = '{}'", workshop.facilitator))[0].clone();
-            self.venue = self.db.get_filtered_venues(format!("id = '{}'", workshop.venue))[0].clone();
-            self.name = workshop.name;
-            self.start_date = workshop.start_date;
-            self.end_date = workshop.end_date;
-        }
+    pub fn ui(&mut self, _ui: &mut Ui, ctx: &Context) {
         if !self.open {
             self.changed = false;
         };
@@ -188,23 +181,25 @@ impl FilterWindow {
                     });
                     ui.separator();
                     ui.horizontal(|ui| {
-                        if ui.button("✔ Confirm").clicked() {
-                            let edited_workshop = Workshop {
-                                id: self.workshop_check.id,
-                                name: self.name.clone(),
-                                facilitator: self.facilitator.id.unwrap(),
-                                venue: self.venue.id.unwrap(),
-                                start_date: self.start_date.clone(),
-                                end_date: self.end_date.clone(),
+                        if ui.button("✔ APPLY").clicked() {
+                            let mut filter = String::new();
+                            if !self.name.is_empty() {
+                                filter += &format!("name = '{}', ", self.name)
                             };
-                            self.db.edit_workshop(edited_workshop).unwrap();
-                            self.workshop_check.id = None;
-                            self.changed = true;
-                        };
-                        if ui.button("❌ Delete").clicked() {
-                            self.db.delete_workshop(self.workshop_check.id.unwrap());
-                            self.workshop_check.id = None;
-                            self.changed = true;
+                            if !self.facilitator.id.is_none() {
+                                filter += &format!("facilitator = '{}', ", self.name)
+                            }
+                            if !self.venue.id.is_none() {
+                                filter += &format!("suburb = '{}', ", self.name)
+                            }
+
+                            if !filter.is_empty() {
+                                filter.truncate(filter.len() - 2)
+                            }
+                            self.filter = filter
+                        }
+                        if ui.button("🔃 Reset").clicked() {
+                            self.reset = true;
                         };
                     });
                 }

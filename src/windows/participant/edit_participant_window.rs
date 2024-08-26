@@ -374,6 +374,7 @@ impl EditWindow {
                     ui.horizontal(|ui| {
                         if ui.button("✔ Confirm").clicked() {
                             let edited_participant = Participant {
+                                // todo: need to add data validation.
                                 id: self.participant_check.id,
                                 first_name: self.first_name.clone(),
                                 last_name: self.last_name.clone(),
@@ -422,9 +423,8 @@ impl EditWindow {
                             self.changed = true;
                         };
                         if ui.button("❌ Delete").clicked() {
-                            self.db
-                                .delete_participant(self.participant_check.id.unwrap())
-                                .unwrap();
+                            // todo: need to add confirmation button.
+                            self.db.delete_participant(self.participant_check.id.unwrap()).unwrap();
                             self.participant_check.id = None;
                             self.changed = true;
                         };

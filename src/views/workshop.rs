@@ -114,6 +114,6 @@ impl WorkshopsView {
     fn load_windows_ui(&mut self, ui: &mut Ui, ctx: &Context) {
         self.add_window.ui(ctx);
         self.edit_window.ui(ui, ctx, self.selected_workshop.clone());
-        self.filter = self.filter_window.ui(ui, ctx);
+        self.filter_window.ui(ui, ctx);
     }
 }

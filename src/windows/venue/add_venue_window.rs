@@ -148,6 +148,7 @@ impl AddWindow {
                 ui.separator();
                 ui.horizontal(|ui| {
                     if ui.button("➕ ADD").clicked() {
+                        // todo: need to add data validation.
                         let new_venue = Venue {
                             id: None,
                             name: self.name.clone(),

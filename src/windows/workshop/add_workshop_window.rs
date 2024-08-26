@@ -168,6 +168,7 @@ impl AddWindow {
                 });
                 ui.separator();
                 ui.horizontal(|ui| {
+                    // todo: need to add data validation.
                     if ui.button("➕ ADD").clicked() {
                         let new_workshop = Workshop {
                             id: None,

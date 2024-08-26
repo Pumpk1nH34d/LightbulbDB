@@ -188,6 +188,7 @@ impl EditWindow {
                     });
                     ui.separator();
                     ui.horizontal(|ui| {
+                        // todo: need to add data validation.
                         if ui.button("✔ Confirm").clicked() {
                             let edited_workshop = Workshop {
                                 id: self.workshop_check.id,
@@ -202,6 +203,7 @@ impl EditWindow {
                             self.changed = true;
                         };
                         if ui.button("❌ Delete").clicked() {
+                            // todo: need to add confirmation button.
                             self.db.delete_workshop(self.workshop_check.id.unwrap());
                             self.workshop_check.id = None;
                             self.changed = true;

@@ -206,6 +206,7 @@ impl EditWindow {
                     ui.separator();
                     ui.horizontal(|ui| {
                         if ui.button("✔ Confirm").clicked() {
+                            // todo: need to add data validation.
                             let edited_venue = Venue {
                                 id: self.venue_check.id,
                                 name: self.name.clone(),
@@ -229,6 +230,7 @@ impl EditWindow {
                             self.changed = true;
                         };
                         if ui.button("❌ Delete").clicked() {
+                            // todo: need to add confirmation button.
                             self.db.delete_venues(self.venue_check.id.unwrap());
                             self.venue_check.id = None;
                             self.changed = true;

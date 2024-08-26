@@ -218,6 +218,7 @@ impl EditWindow {
                     ui.separator();
                     ui.horizontal(|ui| {
                         if ui.button("✔ Confirm").clicked() {
+                            // todo: need to add data validation.
                             let edited_support_worker = SupportWorker {
                                 id: self.support_worker_check.id,
                                 first_name: self.first_name.clone(),
@@ -244,8 +245,8 @@ impl EditWindow {
                             self.changed = true;
                         };
                         if ui.button("❌ Delete").clicked() {
-                            self.db
-                                .delete_support_worker(self.support_worker_check.id.unwrap());
+                            // todo: need to add confirmation button.
+                            self.db.delete_support_worker(self.support_worker_check.id.unwrap());
                             self.support_worker_check.id = None;
                             self.changed = true;
                         };
