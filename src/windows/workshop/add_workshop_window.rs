@@ -1,7 +1,7 @@
 use crate::database_logic::data_structs::{SupportWorker, Venue, Workshop};
 use crate::database_logic::database::DataBase;
 use chrono::NaiveDate;
-use egui::{Context, TextEdit, Ui};
+use egui::{Context, TextEdit};
 use egui_extras::DatePickerButton;
 
 #[derive(Default)]

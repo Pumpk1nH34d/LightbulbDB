@@ -12,7 +12,7 @@ pub enum ForeignView {
 }
 
 #[derive(Default)]
-pub struct EditWindow {
+pub struct FilterWindow {
     pub open: bool,
     pub db: DataBase,
     reset: bool,
@@ -31,7 +31,7 @@ pub struct EditWindow {
     end_date: NaiveDate,
 }
 
-impl EditWindow {
+impl FilterWindow {
     pub fn ui(&mut self, _ui: &mut Ui, ctx: &Context, workshop: Workshop) {
         if self.workshop_check.id != workshop.id {
             self.workshop_check = workshop.clone();
