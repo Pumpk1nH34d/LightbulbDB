@@ -282,54 +282,58 @@ impl AddWindow {
                 });
                 ui.separator(); // Add a separator for visual distinction
                 ui.horizontal(|ui| {
-                    if ui.button("➕ ADD").clicked() {
-                        // TODO: Add data validation here before creating a new participant
+                    if self.first_name.is_empty() || self.last_name.is_empty() || self.medicare.is_empty() {
+                        ui.label("Mandatory text fields cannot be empty");
+                    } else {
+                        if ui.button("➕ ADD").clicked() {
+                            // TODO: Add data validation here before creating a new participant
 
-                        // Create a new Participant instance with the provided details
-                        let new_participant = Participant {
-                            id: None, // The ID is automatically generated
-                            first_name: self.first_name.clone(),
-                            last_name: self.last_name.clone(),
-                            medicare_number: self.medicare.clone(),
-                            dob: (!self.dob.0).then_some(self.dob.1),
-                            address: (!self.address.0).then(|| self.address.1.clone()),
-                            suburb: (!self.suburb.0).then(|| self.suburb.1.clone()),
-                            postcode: (!self.postcode.0).then(|| self.postcode.1.clone()),
-                            phone: (!self.phone.0).then(|| self.phone.1.clone()),
-                            email: (!self.email.0).then(|| self.email.1.clone()),
-                            medical_notes: (!self.medical_notes.0)
-                                .then(|| self.medical_notes.1.clone()),
-                            dietary_notes: (!self.dietary_notes.0)
-                                .then(|| self.dietary_notes.1.clone()),
-                            physical_notes: (!self.physical_notes.0)
-                                .then(|| self.physical_notes.1.clone()),
-                            other_notes: (!self.other_notes.0).then(|| self.other_notes.1.clone()),
-                            support_ratio: (!self.support_ratio.0)
-                                .then(|| self.support_ratio.1.clone()),
-                            photo_permission: (!self.photo_permission.0)
-                                .then_some(self.photo_permission.1),
-                            private_hospital_preference: (!self.private_hospital_preference.0)
-                                .then_some(self.private_hospital_preference.1),
-                            private_health_insurer: (!self.private_health_insurer.0)
-                                .then(|| self.private_health_insurer.1.clone()),
-                            private_health_number: (!self.private_health_number.0)
-                                .then(|| self.private_health_number.1.clone()),
-                            communication_preference: (!self.communication_preference.0)
-                                .then(|| self.communication_preference.1.clone()),
-                            ndis_plan_number: (!self.ndis_plan_number.0)
-                                .then(|| self.ndis_plan_number.1.clone()),
-                            ndis_plan_start_date: (!self.ndis_plan_start_date.0)
-                                .then_some(self.ndis_plan_start_date.1),
-                            core_funding: (!self.core_funding.0).then_some(self.core_funding.1),
-                            capacity_building_funding: (!self.capacity_building_funding.0)
-                                .then_some(self.capacity_building_funding.1),
-                            self_managed: (!self.self_managed.0).then_some(self.self_managed.1),
-                            plan_managed: (!self.plan_managed.0).then_some(self.plan_managed.1),
-                            ndis_plan_end_date: (!self.ndis_plan_end_date.0)
-                                .then_some(self.ndis_plan_end_date.1),
+                            // Create a new Participant instance with the provided details
+                            let new_participant = Participant {
+                                id: None, // The ID is automatically generated
+                                first_name: self.first_name.clone(),
+                                last_name: self.last_name.clone(),
+                                medicare_number: self.medicare.clone(),
+                                dob: (!self.dob.0).then_some(self.dob.1),
+                                address: (!self.address.0).then(|| self.address.1.clone()),
+                                suburb: (!self.suburb.0).then(|| self.suburb.1.clone()),
+                                postcode: (!self.postcode.0).then(|| self.postcode.1.clone()),
+                                phone: (!self.phone.0).then(|| self.phone.1.clone()),
+                                email: (!self.email.0).then(|| self.email.1.clone()),
+                                medical_notes: (!self.medical_notes.0)
+                                    .then(|| self.medical_notes.1.clone()),
+                                dietary_notes: (!self.dietary_notes.0)
+                                    .then(|| self.dietary_notes.1.clone()),
+                                physical_notes: (!self.physical_notes.0)
+                                    .then(|| self.physical_notes.1.clone()),
+                                other_notes: (!self.other_notes.0).then(|| self.other_notes.1.clone()),
+                                support_ratio: (!self.support_ratio.0)
+                                    .then(|| self.support_ratio.1.clone()),
+                                photo_permission: (!self.photo_permission.0)
+                                    .then_some(self.photo_permission.1),
+                                private_hospital_preference: (!self.private_hospital_preference.0)
+                                    .then_some(self.private_hospital_preference.1),
+                                private_health_insurer: (!self.private_health_insurer.0)
+                                    .then(|| self.private_health_insurer.1.clone()),
+                                private_health_number: (!self.private_health_number.0)
+                                    .then(|| self.private_health_number.1.clone()),
+                                communication_preference: (!self.communication_preference.0)
+                                    .then(|| self.communication_preference.1.clone()),
+                                ndis_plan_number: (!self.ndis_plan_number.0)
+                                    .then(|| self.ndis_plan_number.1.clone()),
+                                ndis_plan_start_date: (!self.ndis_plan_start_date.0)
+                                    .then_some(self.ndis_plan_start_date.1),
+                                core_funding: (!self.core_funding.0).then_some(self.core_funding.1),
+                                capacity_building_funding: (!self.capacity_building_funding.0)
+                                    .then_some(self.capacity_building_funding.1),
+                                self_managed: (!self.self_managed.0).then_some(self.self_managed.1),
+                                plan_managed: (!self.plan_managed.0).then_some(self.plan_managed.1),
+                                ndis_plan_end_date: (!self.ndis_plan_end_date.0)
+                                    .then_some(self.ndis_plan_end_date.1),
+                            };
+                            self.db.add_participant(new_participant).unwrap(); // Add the participant to the database
                         };
-                        self.db.add_participant(new_participant).unwrap(); // Add the participant to the database
-                    };
+                    }
                     if ui.button("🔃 Reset").clicked() {
                         self.reset = true; // Set the reset flag to true when the reset button is clicked
                     };

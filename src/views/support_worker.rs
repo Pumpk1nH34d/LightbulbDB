@@ -195,10 +195,6 @@ impl SupportWorkersView {
                     if ui.button("⛭ Filter").clicked() { // Button to open the FilterWindow.
                         self.filter_window.open = !self.filter_window.open;
                     };
-                    if ui.button("RESET DB").clicked() { // Button to reset the database.
-                        self.db.drop_db().unwrap();
-                        self.db.create_db().unwrap();
-                    };
                     ui.label("Sort: "); // Label for the sort options.
                     egui::ComboBox::from_label("")
                         .selected_text(match self.sort { // Display the current sort option.

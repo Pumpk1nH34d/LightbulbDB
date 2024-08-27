@@ -68,6 +68,11 @@ impl Content {
                 self.db.create_db().unwrap(); // Create a new database
                 self.db.populate_database().unwrap(); // Populate the database with initial data
             }
+            // Button to reset the database
+            if ui.button("RESET DB").clicked() {
+                self.db.drop_db().unwrap(); // Drop the current database
+                self.db.create_db().unwrap(); // Create a new database
+            };
         });
     }
 

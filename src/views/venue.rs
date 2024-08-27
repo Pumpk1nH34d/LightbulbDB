@@ -166,10 +166,6 @@ impl VenuesView {
                     if ui.button("⛭ Filter").clicked() {
                         self.filter_window.open = !self.filter_window.open; // Toggle the filter window.
                     };
-                    if ui.button("RESET DB").clicked() {
-                        self.db.drop_db().unwrap(); // Drop the database.
-                        self.db.create_db().unwrap(); // Recreate the database.
-                    };
                     ui.label("Sort: ");
                     // Display a combo box for selecting the sorting order.
                     egui::ComboBox::from_label("")

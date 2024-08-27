@@ -296,11 +296,6 @@ impl ParticipantsView {
                     if ui.button("⛭ Filter").clicked() {
                         self.filter_window.open = !self.filter_window.open;
                     };
-                    // Button to reset the database
-                    if ui.button("RESET DB").clicked() {
-                        self.db.drop_db().unwrap(); // Drop the current database
-                        self.db.create_db().unwrap(); // Create a new database
-                    };
                     ui.label("Sort: "); // Label for the sort dropdown
                     // ComboBox to select the sorting order
                     egui::ComboBox::from_label("")
