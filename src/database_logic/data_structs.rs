@@ -162,7 +162,7 @@ pub struct Venue {
     pub price: Option<String>, // Optional price for using the venue
     pub notes: Option<String>, // Optional additional notes about the venue
 }
-
+/*
 // Define a struct to link workshops with support workers
 #[derive(Debug)]
 pub struct WorkshopSupportWorker {
@@ -176,7 +176,7 @@ pub struct WorkshopParticipant {
     pub workshop: i64, // ID of the workshop
     pub participant: i64, // ID of the participant
 }
-
+*/
 // Define a struct for workshops with detailed information
 #[derive(Debug, Clone, Default)]
 pub struct Workshop {
