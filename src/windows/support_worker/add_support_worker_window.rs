@@ -4,6 +4,8 @@ use chrono::NaiveDate;
 use egui::{Context, TextEdit, Ui};
 use egui_extras::DatePickerButton;
 
+//todo: comment code
+
 #[derive(Default)]
 pub struct AddWindow {
     pub open: bool,
@@ -165,12 +167,12 @@ impl AddWindow {
                             address: (!self.address.0).then(|| self.address.1.clone()),
                             suburb: (!self.suburb.0).then(|| self.suburb.1.clone()),
                             postcode: (!self.postcode.0).then(|| self.postcode.1.clone()),
-                            first_aid: (!self.first_aid.0).then(|| self.first_aid.1),
+                            first_aid: (!self.first_aid.0).then_some(self.first_aid.1),
                             confidentiality_agreement: (!self.confidentiality_agreement.0)
-                                .then(|| self.confidentiality_agreement.1),
+                                .then_some(self.confidentiality_agreement.1),
                             police_clearance: (!self.police_clearance.0)
-                                .then(|| self.police_clearance.1),
-                            car_insurance: (!self.car_insurance.0).then(|| self.car_insurance.1),
+                                .then_some(self.police_clearance.1),
+                            car_insurance: (!self.car_insurance.0).then_some(self.car_insurance.1),
                             other_qualifications: (!self.other_qualifications.0)
                                 .then(|| self.other_qualifications.1.clone()),
                             notes: (!self.notes.0).then(|| self.notes.1.clone()),

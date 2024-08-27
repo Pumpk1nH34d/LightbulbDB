@@ -1,4 +1,5 @@
-use crate::database_logic::data_structs::SupportWorker;
+use std::fmt::{Display};
+use crate::database_logic::data_structs::{Sort, SupportWorker};
 use crate::database_logic::database::DataBase;
 use crate::windows::support_worker::{
     add_support_worker_window::AddWindow, edit_support_worker_window::EditWindow,
@@ -6,10 +7,20 @@ use crate::windows::support_worker::{
 };
 use egui::{Context, Ui};
 
+//todo: comment code
+
+fn sort_to_string(sort: &Sort) -> String {
+    match sort {
+        Sort::AlphabeticalAscending => {String::from("ORDER BY first_name ASC")}
+        Sort::AlphabeticalDescending => {String::from("ORDER BY first_name DESC")}
+    }
+}
+
 #[derive(Default)]
 pub struct SupportWorkersView {
     db: DataBase,
     filter: String,
+    sort: Sort,
     add_window: AddWindow,
     edit_window: EditWindow,
     filter_window: FilterWindow,
@@ -26,11 +37,10 @@ impl SupportWorkersView {
 
     fn main_view(&mut self, ui: &mut Ui) {
         let support_workers = if self.filter.is_empty() {
-            self.db.get_all_support_workers()
+            self.db.get_all_support_workers(sort_to_string(&self.sort))
         } else {
-            self.db.get_filtered_support_workers(self.filter.clone())
+            self.db.get_filtered_support_workers(self.filter.clone(), sort_to_string(&self.sort))
         };
-        let size = support_workers.len();
         egui::Grid::new("headings")
             .num_columns(5)
             .spacing([30.0, 4.0])
@@ -49,24 +59,24 @@ impl SupportWorkersView {
                 .spacing([30.0, 4.0])
                 .striped(true)
                 .show(ui, |ui| {
-                    for index in 0..size {
+                    for support_worker in support_workers {
                         if ui
                             .button(format!(
                                 "{} {}",
-                                &support_workers[index].first_name,
-                                &support_workers[index].last_name
+                                support_worker.first_name,
+                                support_worker.last_name
                             ))
                             .clicked()
                         {
-                            self.selected_support_worker = support_workers[index].clone();
+                            self.selected_support_worker = support_worker.clone();
                         }
-                        ui.label(match support_workers[index].dob {
+                        ui.label(match support_worker.dob {
                             None => String::new(),
                             Some(value) => value.format("%d-%m-%Y").to_string(),
                         });
-                        ui.label(&support_workers[index].phone);
-                        ui.label(&support_workers[index].email);
-                        ui.label(match &support_workers[index].car_insurance {
+                        ui.label(support_worker.phone);
+                        ui.label(support_worker.email);
+                        ui.label(match support_worker.car_insurance {
                             None => String::new(),
                             Some(value) => value.to_string(),
                         });
@@ -185,6 +195,24 @@ impl SupportWorkersView {
                         self.db.drop_db().unwrap();
                         self.db.create_db().unwrap();
                     };
+                    ui.label("Sort: ");
+                    egui::ComboBox::from_label("")
+                        .selected_text(match self.sort {
+                            Sort::AlphabeticalAscending => {String::from("Ascending")}
+                            Sort::AlphabeticalDescending => {String::from("Descending")}
+                        })
+                        .show_ui(ui, |ui| {
+                            ui.selectable_value(
+                                &mut self.sort,
+                                Sort::AlphabeticalAscending,
+                                "Ascending",
+                            );
+                            ui.selectable_value(
+                                &mut self.sort,
+                                Sort::AlphabeticalDescending,
+                                "Descending",
+                            );
+                        });
                 });
             });
     }

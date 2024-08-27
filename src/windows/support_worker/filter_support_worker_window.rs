@@ -1,10 +1,10 @@
-use crate::database_logic::database::DataBase;
 use egui::{Context, TextEdit, Ui};
+
+//todo: comment code
 
 #[derive(Default)]
 pub struct FilterWindow {
     pub open: bool,
-    pub db: DataBase,
     reset: bool,
 
     filter: String,
@@ -88,34 +88,34 @@ impl FilterWindow {
                     if ui.button("✔ APPLY").clicked() {
                         let mut filter = String::new();
                         if !self.first_name.is_empty() {
-                            filter += &format!("first_name = '{}', ", self.first_name)
+                            filter += &format!("first_name = '{}' AND ", self.first_name)
                         };
                         if !self.last_name.is_empty() {
-                            filter += &format!("last_name = '{}', ", self.last_name)
+                            filter += &format!("last_name = '{}' AND ", self.last_name)
                         }
                         if !self.phone.is_empty() {
-                            filter += &format!("phone = '{}', ", self.phone)
+                            filter += &format!("phone = '{}' AND ", self.phone)
                         }
                         if !self.email.is_empty() {
-                            filter += &format!("email = '{}', ", self.email)
+                            filter += &format!("email = '{}' AND ", self.email)
                         }
                         if !self.address.is_empty() {
-                            filter += &format!("address = '{}', ", self.address)
+                            filter += &format!("address = '{}' AND ", self.address)
                         }
                         if !self.suburb.is_empty() {
-                            filter += &format!("suburb = '{}', ", self.suburb)
+                            filter += &format!("suburb = '{}' AND ", self.suburb)
                         }
                         if !self.postcode.is_empty() {
-                            filter += &format!("postcode = '{}', ", self.postcode)
+                            filter += &format!("postcode = '{}' AND ", self.postcode)
                         }
                         if !self.other_qualifications.is_empty() {
-                            filter += &format!("other_qualifications = '{}', ", self.other_qualifications)
+                            filter += &format!("other_qualifications = '{}' AND ", self.other_qualifications)
                         }
                         if !self.notes.is_empty() {
-                            filter += &format!("notes = '{}', ", self.notes)
+                            filter += &format!("notes = '{}' AND ", self.notes)
                         }
                         if !filter.is_empty() {
-                            filter.truncate(filter.len() - 2)
+                            filter.truncate(filter.len() - 5)
                         }
                         self.filter = filter;
                     }

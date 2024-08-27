@@ -1,3 +1,5 @@
+//todo: comment code
+
 use chrono::NaiveDate;
 use crate::database_logic::data_structs::{SupportWorker, Venue, Workshop};
 use crate::database_logic::database::DataBase;
@@ -9,13 +11,14 @@ pub enum ForeignView {
     #[default]
     Facilitator,
     Venue,
+    Participants,
+    SupportWorkers
 }
 
 #[derive(Default)]
 pub struct EditWindow {
     pub open: bool,
     pub db: DataBase,
-    reset: bool,
     
     right_view_selected: Option<ForeignView>,
     changed: bool,
@@ -23,6 +26,10 @@ pub struct EditWindow {
     
 
     name: String,
+    support_workers: Vec<i32>,
+    support_worker_filter: String,
+    participants: Vec<i32>,
+    participant_filter: String,
     facilitator: SupportWorker,
     facilitator_filter: String,
     venue: Venue,
@@ -35,8 +42,10 @@ impl EditWindow {
     pub fn ui(&mut self, _ui: &mut Ui, ctx: &Context, workshop: Workshop) {
         if self.workshop_check.id != workshop.id {
             self.workshop_check = workshop.clone();
-            self.facilitator = self.db.get_filtered_support_workers(format!("id = '{}'", workshop.facilitator))[0].clone();
-            self.venue = self.db.get_filtered_venues(format!("id = '{}'", workshop.venue))[0].clone();
+            self.facilitator = self.db.get_filtered_support_workers(format!("id = '{}'", workshop.facilitator), String::from(""))[0].clone();
+            self.venue = self.db.get_filtered_venues(format!("id = '{}'", workshop.venue), String::from(""))[0].clone();
+            self.participants = self.db.get_participants_from_workshop(self.workshop_check.id.unwrap());
+            self.support_workers = self.db.get_support_workers_from_workshop(self.workshop_check.id.unwrap());
             self.name = workshop.name;
             self.start_date = workshop.start_date;
             self.end_date = workshop.end_date;
@@ -47,8 +56,9 @@ impl EditWindow {
         egui::Window::new("Edit Workshop")
             .open(&mut self.open)
             .max_height(110.0)
+            .default_width(500.0)
             .show(ctx, |ui| {
-                egui::SidePanel::right("create_workshop_right_panel")
+                egui::SidePanel::right("edit_workshop_right_panel")
                     .resizable(true)
                     .default_width(150.0)
                     .show_inside(ui, |ui| {
@@ -65,26 +75,25 @@ impl EditWindow {
                                                     .facilitator_filter
                                                     .is_empty()
                                                 {
-                                                    self.db.get_all_support_workers()
+                                                    self.db.get_all_support_workers(String::from(""))
                                                 } else {
                                                     self.db.get_filtered_support_workers(format!(
                                                         "first_name LIKE '%{}%'",
                                                         self.facilitator_filter.clone()
-                                                    ))
+                                                    ), String::from(""))
                                                 };
-                                                let size = facilitators.len();
                                                 ui.label("Facilitator Name");
                                                 ui.end_row();
-                                                for index in 0..size {
+                                                for facilitator in facilitators {
                                                     if ui
                                                         .button(format!(
                                                             "{} {}",
-                                                            &facilitators[index].first_name,
-                                                            &facilitators[index].last_name
+                                                            facilitator.first_name,
+                                                            facilitator.last_name
                                                         ))
                                                         .clicked()
                                                     {
-                                                        self.facilitator = facilitators[index].clone();
+                                                        self.facilitator = facilitator.clone();
                                                     }
                                                     /*
                                                     ui.label(&workshops[index].first_name.clone());
@@ -103,25 +112,121 @@ impl EditWindow {
                                                     .venue_filter
                                                     .is_empty()
                                                 {
-                                                    self.db.get_all_venues()
+                                                    self.db.get_all_venues(String::from(""))
                                                 } else {
                                                     self.db.get_filtered_venues(format!(
                                                         "name LIKE '%{}%'",
                                                         self.venue_filter.clone()
-                                                    ))
+                                                    ), String::from(""))
                                                 };
-                                                let size = venues.len();
                                                 ui.label("Venue Name");
                                                 ui.end_row();
-                                                for index in 0..size {
+                                                for venue in venues {
                                                     if ui
-                                                        .button(format!(
-                                                            "{}",
-                                                            &venues[index].name,
-                                                        ))
+                                                        .button(venue.name.to_string())
                                                         .clicked()
                                                     {
-                                                        self.venue = venues[index].clone();
+                                                        self.venue = venue.clone();
+                                                    }
+                                                    ui.end_row();
+                                                }
+                                            }
+                                            ForeignView::Participants => {
+                                                let participants =
+                                                    if self.participant_filter.is_empty() {
+                                                        self.db
+                                                            .get_all_participants(String::from(""))
+                                                    } else {
+                                                        self.db.get_filtered_participants(
+                                                            format!(
+                                                                "first_name LIKE '%{}%'",
+                                                                self.participant_filter.clone()
+                                                            ),
+                                                            String::from(""),
+                                                        )
+                                                    };
+                                                ui.label("Participant Name");
+                                                ui.end_row();
+                                                for participant in participants {
+                                                    let id = participant.id.unwrap();
+                                                    if self.participants.contains(&id) {
+                                                        if ui
+                                                            .button(format!(
+                                                                "☑ {} {}",
+                                                                participant.first_name,
+                                                                participant.last_name
+                                                            ))
+                                                            .clicked()
+                                                        {
+                                                            self.participants
+                                                                .retain(|&value| value != id);
+                                                        }
+                                                    } else {
+                                                        if ui
+                                                            .button(format!(
+                                                                "{} {}",
+                                                                participant.first_name,
+                                                                participant.last_name
+                                                            ))
+                                                            .clicked()
+                                                        {
+                                                            self.participants.push(id);
+                                                        }
+                                                    }
+
+                                                    /*
+                                                    ui.label(&workshops[index].first_name.clone());
+                                                    ui.label(&workshops[index].first_name.clone());
+                                                    ui.label(&workshops[index].facilitator.clone().to_string());
+                                                    ui.label(&workshops[index].venue.clone().to_string());
+                                                    ui.label(&workshops[index].start_date.clone().to_string());
+                                                    ui.label(&workshops[index].end_date.clone().to_string());
+
+                                                    */
+                                                    ui.end_row();
+                                                }
+                                            }
+                                            ForeignView::SupportWorkers => {
+                                                let support_workers =
+                                                    if self.support_worker_filter.is_empty() {
+                                                        self.db
+                                                            .get_all_support_workers(String::from(""))
+                                                    } else {
+                                                        self.db.get_filtered_support_workers(
+                                                            format!(
+                                                                "first_name LIKE '%{}%'",
+                                                                self.support_worker_filter.clone()
+                                                            ),
+                                                            String::from(""),
+                                                        )
+                                                    };
+                                                ui.label("Support Worker Name");
+                                                ui.end_row();
+                                                for support_worker in support_workers {
+                                                    let id = support_worker.id.unwrap();
+                                                    if self.support_workers.contains(&id) {
+                                                        if ui
+                                                            .button(format!(
+                                                                "☑ {} {}",
+                                                                support_worker.first_name,
+                                                                support_worker.last_name
+                                                            ))
+                                                            .clicked()
+                                                        {
+                                                            self.support_workers
+                                                                .retain(|&value| value != id);
+                                                        }
+                                                    } else {
+                                                        if ui
+                                                            .button(format!(
+                                                                "{} {}",
+                                                                support_worker.first_name,
+                                                                support_worker.last_name
+                                                            ))
+                                                            .clicked()
+                                                        {
+                                                            self.support_workers.push(id);
+                                                        }
                                                     }
                                                     ui.end_row();
                                                 }
@@ -140,7 +245,7 @@ impl EditWindow {
                     ui.label("Select a Workshop to EDIT");
                 } else {
                     egui::ScrollArea::vertical().show(ui, |ui| {
-                        egui::Grid::new("edit_workshop")
+                        egui::Grid::new("edit_workshop_grid")
                             .num_columns(2)
                             .spacing([40.0, 4.0])
                             .striped(true)
@@ -159,10 +264,32 @@ impl EditWindow {
                                         }
                                     });
                                 ui.end_row();
+                                ui.label("Participants: ");
+                                if ui
+                                    .add(
+                                        TextEdit::singleline(&mut self.participant_filter)
+                                            .hint_text("participant"),
+                                    )
+                                    .has_focus()
+                                {
+                                    self.right_view_selected = Some(ForeignView::Participants);
+                                }
+                                ui.end_row();
+                                ui.label("Support Workers:");
+                                if ui
+                                    .add(
+                                        TextEdit::singleline(&mut self.support_worker_filter)
+                                            .hint_text("participant"),
+                                    )
+                                    .has_focus()
+                                {
+                                    self.right_view_selected = Some(ForeignView::SupportWorkers);
+                                }
+                                ui.end_row();
                                 ui.label("Venue:");
                                 ui.horizontal(|ui| {
                                     if self.venue.id.is_some() {
-                                        ui.label(format!("{}", self.venue.name));
+                                        ui.label(self.venue.name.to_string());
                                     }
                                     if ui.add(TextEdit::singleline(&mut self.venue_filter).hint_text("venue")).has_focus() {
                                         self.right_view_selected = Some(ForeignView::Venue);
@@ -188,23 +315,26 @@ impl EditWindow {
                     });
                     ui.separator();
                     ui.horizontal(|ui| {
-                        // todo: need to add data validation.
                         if ui.button("✔ Confirm").clicked() {
                             let edited_workshop = Workshop {
                                 id: self.workshop_check.id,
                                 name: self.name.clone(),
                                 facilitator: self.facilitator.id.unwrap(),
                                 venue: self.venue.id.unwrap(),
-                                start_date: self.start_date.clone(),
-                                end_date: self.end_date.clone(),
+                                start_date: self.start_date,
+                                end_date: self.end_date,
                             };
                             self.db.edit_workshop(edited_workshop).unwrap();
+                            self.db.delete_workshop_participants(self.workshop_check.id.unwrap()).unwrap();
+                            self.db.add_participants_to_workshop(&self.participants, self.workshop_check.id.unwrap()).unwrap();
+                            self.db.delete_workshop_support_workers(self.workshop_check.id.unwrap()).unwrap();
+                            self.db.add_support_workers_to_workshop(&self.support_workers, self.workshop_check.id.unwrap()).unwrap();
                             self.workshop_check.id = None;
                             self.changed = true;
                         };
                         if ui.button("❌ Delete").clicked() {
                             // todo: need to add confirmation button.
-                            self.db.delete_workshop(self.workshop_check.id.unwrap());
+                            self.db.delete_workshop(self.workshop_check.id.unwrap()).unwrap();
                             self.workshop_check.id = None;
                             self.changed = true;
                         };

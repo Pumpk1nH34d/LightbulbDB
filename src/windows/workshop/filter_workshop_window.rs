@@ -1,14 +1,18 @@
 use chrono::NaiveDate;
-use crate::database_logic::data_structs::{SupportWorker, Venue, Workshop};
+use crate::database_logic::data_structs::{Participant, SupportWorker, Venue, Workshop};
 use crate::database_logic::database::DataBase;
 use egui::{Context, TextEdit, Ui};
 use egui_extras::DatePickerButton;
+
+//todo: comment code
 
 #[derive(Default)]
 pub enum ForeignView {
     #[default]
     Facilitator,
     Venue,
+    Participants,
+    SupportWorkers
 }
 
 #[derive(Default)]
@@ -23,30 +27,34 @@ pub struct FilterWindow {
 
     filter: String,
 
+
     name: String,
     facilitator: SupportWorker,
     facilitator_filter: String,
+    participant: Participant,
+    participant_filter: String,
+    support_worker: SupportWorker,
+    support_worker_filter: String,
     venue: Venue,
     venue_filter: String,
-    start_date: NaiveDate,
-    end_date: NaiveDate,
 }
 
 impl FilterWindow {
-    pub fn ui(&mut self, _ui: &mut Ui, ctx: &Context) {
+    pub fn ui(&mut self, _ui: &mut Ui, ctx: &Context) -> String {
         if !self.open {
             self.changed = false;
         };
-        egui::Window::new("Edit Workshop")
+        egui::Window::new("Filter Workshop")
             .open(&mut self.open)
             .max_height(110.0)
+            .default_width(500.0)
             .show(ctx, |ui| {
-                egui::SidePanel::right("create_workshop_right_panel")
+                egui::SidePanel::right("filter_workshop_right_panel")
                     .resizable(true)
                     .default_width(150.0)
                     .show_inside(ui, |ui| {
                         egui::ScrollArea::vertical().show(ui, |ui| {
-                            egui::Grid::new("foreign_edit_filter_results")
+                            egui::Grid::new("foreign_filter_filter_results")
                                 .num_columns(6)
                                 .spacing([30.0, 4.0])
                                 .striped(true)
@@ -58,26 +66,25 @@ impl FilterWindow {
                                                     .facilitator_filter
                                                     .is_empty()
                                                 {
-                                                    self.db.get_all_support_workers()
+                                                    self.db.get_all_support_workers(String::from(""))
                                                 } else {
                                                     self.db.get_filtered_support_workers(format!(
                                                         "first_name LIKE '%{}%'",
                                                         self.facilitator_filter.clone()
-                                                    ))
+                                                    ), String::from(""))
                                                 };
-                                                let size = facilitators.len();
                                                 ui.label("Facilitator Name");
                                                 ui.end_row();
-                                                for index in 0..size {
+                                                for facilitator in facilitators {
                                                     if ui
                                                         .button(format!(
                                                             "{} {}",
-                                                            &facilitators[index].first_name,
-                                                            &facilitators[index].last_name
+                                                            facilitator.first_name,
+                                                            facilitator.last_name
                                                         ))
                                                         .clicked()
                                                     {
-                                                        self.facilitator = facilitators[index].clone();
+                                                        self.facilitator = facilitator.clone();
                                                     }
                                                     /*
                                                     ui.label(&workshops[index].first_name.clone());
@@ -96,25 +103,77 @@ impl FilterWindow {
                                                     .venue_filter
                                                     .is_empty()
                                                 {
-                                                    self.db.get_all_venues()
+                                                    self.db.get_all_venues(String::from(""))
                                                 } else {
                                                     self.db.get_filtered_venues(format!(
                                                         "name LIKE '%{}%'",
                                                         self.venue_filter.clone()
-                                                    ))
+                                                    ), String::from(""))
                                                 };
-                                                let size = venues.len();
                                                 ui.label("Venue Name");
                                                 ui.end_row();
-                                                for index in 0..size {
+                                                for venue in venues {
+                                                    if ui
+                                                        .button(venue.name.to_string())
+                                                        .clicked()
+                                                    {
+                                                        self.venue = venue.clone();
+                                                    }
+                                                    ui.end_row();
+                                                }
+                                            }
+                                            ForeignView::Participants => {
+                                                let participants = if self
+                                                    .participant_filter
+                                                    .is_empty()
+                                                {
+                                                    self.db.get_all_participants(String::from(""))
+                                                } else {
+                                                    self.db.get_filtered_participants(format!(
+                                                        "first_name LIKE '%{}%'",
+                                                        self.participant_filter.clone()
+                                                    ), String::from(""))
+                                                };
+                                                ui.label("Participant Name");
+                                                ui.end_row();
+                                                for participant in participants {
                                                     if ui
                                                         .button(format!(
-                                                            "{}",
-                                                            &venues[index].name,
+                                                            "{} {}",
+                                                            participant.first_name,
+                                                            participant.last_name
                                                         ))
                                                         .clicked()
                                                     {
-                                                        self.venue = venues[index].clone();
+                                                        self.participant = participant.clone();
+                                                    }
+                                                    ui.end_row();
+                                                }
+                                            }
+                                            ForeignView::SupportWorkers => {
+                                                let support_workers = if self
+                                                    .support_worker_filter
+                                                    .is_empty()
+                                                {
+                                                    self.db.get_all_support_workers(String::from(""))
+                                                } else {
+                                                    self.db.get_filtered_support_workers(format!(
+                                                        "first_name LIKE '%{}%'",
+                                                        self.support_worker_filter.clone()
+                                                    ), String::from(""))
+                                                };
+                                                ui.label("Participant Name");
+                                                ui.end_row();
+                                                for support_worker in support_workers {
+                                                    if ui
+                                                        .button(format!(
+                                                            "{} {}",
+                                                            support_worker.first_name,
+                                                            support_worker.last_name
+                                                        ))
+                                                        .clicked()
+                                                    {
+                                                        self.support_worker = support_worker.clone();
                                                     }
                                                     ui.end_row();
                                                 }
@@ -126,14 +185,8 @@ impl FilterWindow {
                                 });
                         });
                     });
-                if self.changed {
-                    ui.label("DONE ✔");
-                    ui.label("Reselect Workshop to see changes.");
-                } else if self.workshop_check.id.is_none() {
-                    ui.label("Select a Workshop to EDIT");
-                } else {
                     egui::ScrollArea::vertical().show(ui, |ui| {
-                        egui::Grid::new("edit_workshop")
+                        egui::Grid::new("filter_workshop")
                             .num_columns(2)
                             .spacing([40.0, 4.0])
                             .striped(true)
@@ -155,27 +208,33 @@ impl FilterWindow {
                                 ui.label("Venue:");
                                 ui.horizontal(|ui| {
                                     if self.venue.id.is_some() {
-                                        ui.label(format!("{}", self.venue.name));
+                                        ui.label(self.venue.name.to_string());
                                     }
                                     if ui.add(TextEdit::singleline(&mut self.venue_filter).hint_text("venue")).has_focus() {
                                         self.right_view_selected = Some(ForeignView::Venue);
                                     }});
                                 ui.end_row();
-                                ui.label("Start Date:");
-                                ui.add(
-                                    DatePickerButton::new(&mut self.start_date)
-                                        .format("%d-%m-%Y")
-                                        .highlight_weekends(false)
-                                        .id_source("start_date"),
-                                );
+                                ui.label("Participant:");
+                                ui.horizontal(|ui|
+                                    {
+                                        if self.participant.id.is_some() {
+                                            ui.label(format!("{} {}", self.participant.first_name, self.participant.last_name));
+                                        }
+                                        if ui.add(TextEdit::singleline(&mut self.participant_filter).hint_text("participant")).has_focus() {
+                                            self.right_view_selected = Some(ForeignView::Participants);
+                                        }
+                                    });
                                 ui.end_row();
-                                ui.label("End Date:");
-                                ui.add(
-                                    DatePickerButton::new(&mut self.end_date)
-                                        .format("%d-%m-%Y")
-                                        .highlight_weekends(false)
-                                        .id_source("end_date"),
-                                );
+                                ui.label("Support Worker:");
+                                ui.horizontal(|ui|
+                                    {
+                                        if self.support_worker.id.is_some() {
+                                            ui.label(format!("{} {}", self.support_worker.first_name, self.support_worker.last_name));
+                                        }
+                                        if ui.add(TextEdit::singleline(&mut self.support_worker_filter).hint_text("support Worker")).has_focus() {
+                                            self.right_view_selected = Some(ForeignView::SupportWorkers);
+                                        }
+                                    });
                                 ui.end_row();
                             });
                     });
@@ -184,17 +243,17 @@ impl FilterWindow {
                         if ui.button("✔ APPLY").clicked() {
                             let mut filter = String::new();
                             if !self.name.is_empty() {
-                                filter += &format!("name = '{}', ", self.name)
+                                filter += &format!("name = '{}' AND ", self.name)
                             };
-                            if !self.facilitator.id.is_none() {
-                                filter += &format!("facilitator = '{}', ", self.name)
+                            if self.facilitator.id.is_some() {
+                                filter += &format!("facilitator = '{}' AND ", self.name)
                             }
-                            if !self.venue.id.is_none() {
-                                filter += &format!("suburb = '{}', ", self.name)
+                            if self.venue.id.is_some() {
+                                filter += &format!("venue = '{}' AND ", self.name)
                             }
 
                             if !filter.is_empty() {
-                                filter.truncate(filter.len() - 2)
+                                filter.truncate(filter.len() - 4)
                             }
                             self.filter = filter
                         }
@@ -202,7 +261,14 @@ impl FilterWindow {
                             self.reset = true;
                         };
                     });
-                }
             });
+        if self.reset {
+            self.reset_values();
+        };
+        self.filter.clone()
+    }
+
+    pub fn reset_values(&mut self) {
+        (*self, self.open) = (Self::default(), self.open);
     }
 }

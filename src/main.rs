@@ -10,18 +10,15 @@ use eframe::egui;
 use egui::Ui;
 use crate::database_logic::database::DataBase;
 
-#[derive(PartialEq)]
+//todo: comment code
+
+#[derive(PartialEq, Default)]
 enum Views {
+    #[default]
     ParticipantsView,
     Workshops,
     SupportWorkers,
     Venues,
-}
-
-impl Default for Views {
-    fn default() -> Self {
-        Self::ParticipantsView
-    }
 }
 
 #[derive(Default)]

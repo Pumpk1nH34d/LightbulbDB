@@ -1,14 +1,23 @@
-use crate::database_logic::data_structs::Venue;
+use crate::database_logic::data_structs::{Venue, Sort};
 use crate::database_logic::database::DataBase;
 use crate::windows::venue::{add_venue_window::AddWindow, edit_venue_window::EditWindow, filter_venue_window::FilterWindow};
 use egui::{Context, Ui};
 
+//todo: comment code
+
+fn sort_to_string(sort: &Sort) -> String {
+    match sort {
+        Sort::AlphabeticalAscending => {String::from("ORDER BY name ASC")}
+        Sort::AlphabeticalDescending => {String::from("ORDER BY name DESC")}
+    }
+}
+
 #[derive(Default)]
 pub struct VenuesView {
     db: DataBase,
-    
+
+    sort: Sort,
     filter: String,
-    name_filter: String,
     add_window: AddWindow,
     edit_window: EditWindow,
     filter_window: FilterWindow,
@@ -26,11 +35,10 @@ impl VenuesView {
 
     fn main_view(&mut self, ui: &mut Ui) {
         let venues = if self.filter.is_empty() {
-            self.db.get_all_venues()
+            self.db.get_all_venues(sort_to_string(&self.sort))
         } else { 
-            self.db.get_filtered_venues(self.filter.clone())
+            self.db.get_filtered_venues(self.filter.clone(), sort_to_string(&self.sort))
         };
-        let size = venues.len();
         egui::Grid::new("headings")
             .num_columns(5)
             .spacing([30.0, 4.0])
@@ -49,14 +57,14 @@ impl VenuesView {
                 .spacing([30.0, 4.0])
                 .striped(true)
                 .show(ui, |ui| {
-                    for index in 0..size {
-                        if ui.button(format!("{}", &venues[index].name,)).clicked() {
-                            self.selected_venue = venues[index].clone();
+                    for venue in venues {
+                        if ui.button(venue.name.to_string()).clicked() {
+                            self.selected_venue = venue.clone();
                         }
-                        ui.label(&venues[index].address.clone().unwrap());
-                        ui.label(&venues[index].postcode.clone().unwrap());
-                        ui.label(&venues[index].state.clone().unwrap());
-                        ui.label(&venues[index].price.clone().unwrap());
+                        ui.label(venue.address.clone().unwrap());
+                        ui.label(venue.postcode.clone().unwrap());
+                        ui.label(venue.state.clone().unwrap());
+                        ui.label(venue.price.clone().unwrap());
                         ui.end_row();
                     }
                 });
@@ -69,7 +77,7 @@ impl VenuesView {
             .show_inside(ui, |ui| {
                 if self.selected_venue.id.is_some() {
                     ui.vertical_centered(|ui| {
-                        ui.heading(format!("{}", self.selected_venue.name));
+                        ui.heading(self.selected_venue.name.to_string());
                     });
                     egui::ScrollArea::vertical().show(ui, |ui| {
                         ui.label(format!("Name: {}", self.selected_venue.name));
@@ -150,6 +158,24 @@ impl VenuesView {
                         self.db.drop_db().unwrap();
                         self.db.create_db().unwrap();
                     };
+                    ui.label("Sort: ");
+                    egui::ComboBox::from_label("")
+                        .selected_text(match self.sort {
+                            Sort::AlphabeticalAscending => {String::from("Ascending")}
+                            Sort::AlphabeticalDescending => {String::from("Descending")}
+                        })
+                        .show_ui(ui, |ui| {
+                            ui.selectable_value(
+                                &mut self.sort,
+                                Sort::AlphabeticalAscending,
+                                "Ascending",
+                            );
+                            ui.selectable_value(
+                                &mut self.sort,
+                                Sort::AlphabeticalDescending,
+                                "Descending",
+                            );
+                        });
                 });
             });
     }

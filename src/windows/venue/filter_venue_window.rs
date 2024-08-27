@@ -1,10 +1,10 @@
-use crate::database_logic::database::DataBase;
 use egui::{Context, TextEdit, Ui};
+
+//todo: comment code
 
 #[derive(Default)]
 pub struct FilterWindow {
     pub open: bool,
-    pub db: DataBase,
     reset: bool,
 
     filter: String,
@@ -85,40 +85,40 @@ impl FilterWindow {
                     if ui.button("✔ APPLY").clicked() {
                         let mut filter = String::new();
                         if !self.name.is_empty() {
-                            filter += &format!("name = '{}', ", self.name)
+                            filter += &format!("name = '{}' AND ", self.name)
                         };
                         if !self.address.is_empty() {
-                            filter += &format!("address = '{}', ", self.address)
+                            filter += &format!("address = '{}' AND ", self.address)
                         }
                         if !self.suburb.is_empty() {
-                            filter += &format!("suburb = '{}', ", self.suburb)
+                            filter += &format!("suburb = '{}' AND ", self.suburb)
                         }
                         if !self.postcode.is_empty() {
-                            filter += &format!("postcode = '{}', ", self.postcode)
+                            filter += &format!("postcode = '{}' AND ", self.postcode)
                         }
                         if !self.state.is_empty() {
-                            filter += &format!("state = '{}', ", self.state)
+                            filter += &format!("state = '{}' AND ", self.state)
                         }
                         if !self.description.is_empty() {
-                            filter += &format!("description = '{}', ", self.description)
+                            filter += &format!("description = '{}' AND ", self.description)
                         }
                         if !self.contact_person_name.is_empty() {
-                            filter += &format!("contact_person_name = '{}', ", self.contact_person_name)
+                            filter += &format!("contact_person_name = '{}' AND ", self.contact_person_name)
                         }
                         if !self.contact_person_phone.is_empty() {
-                            filter += &format!("contact_person_phone = '{}', ", self.contact_person_phone)
+                            filter += &format!("contact_person_phone = '{}' AND ", self.contact_person_phone)
                         }
                         if !self.venue_phone_number.is_empty() {
-                            filter += &format!("venue_phone_number = '{}', ", self.venue_phone_number)
+                            filter += &format!("venue_phone_number = '{}' AND ", self.venue_phone_number)
                         }
                         if !self.price.is_empty() {
-                            filter += &format!("price = '{}', ", self.price)
+                            filter += &format!("price = '{}' AND ", self.price)
                         }
                         if !self.notes.is_empty() {
-                            filter += &format!("notes = '{}', ", self.notes)
+                            filter += &format!("notes = '{}' AND ", self.notes)
                         }
                         if !filter.is_empty() {
-                            filter.truncate(filter.len() - 2)
+                            filter.truncate(filter.len() - 5)
                         }
                         self.filter = filter;
                     }

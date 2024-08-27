@@ -2,11 +2,13 @@ use crate::database_logic::data_structs::{Participant, SupportWorker, Venue, Wor
 use crate::database_logic::database::DataBase;
 use chrono::NaiveDate;
 
+//todo: comment code
+
 impl DataBase {
-    pub fn get_all_participants(&self) -> Vec<Participant> {
+    pub fn get_all_participants(&self, sort: String) -> Vec<Participant> {
         let mut stmt = self
             .connection
-            .prepare("SELECT * FROM Participants")
+            .prepare(&format!("SELECT * FROM Participants {}", sort))
             .unwrap();
         stmt.query_map([], |row| {
             Ok(Participant {
@@ -56,8 +58,8 @@ impl DataBase {
         .unwrap()
     }
 
-    pub fn get_filtered_participants(&self, filter: String) -> Vec<Participant> {
-        let mut stmt = self.connection.prepare(&format!("SELECT * FROM Participants WHERE {}", filter)).unwrap();
+    pub fn get_filtered_participants(&self, filter: String, sort: String) -> Vec<Participant> {
+        let mut stmt = self.connection.prepare(&format!("SELECT * FROM Participants WHERE {} {}", filter, sort)).unwrap();
         stmt.query_map([], |row| {
             Ok(Participant {
                 id: row.get_unwrap(0),
@@ -106,10 +108,10 @@ impl DataBase {
             .unwrap()
     }
     
-    pub fn get_all_support_workers(&self) -> Vec<SupportWorker> {
+    pub fn get_all_support_workers(&self, sort: String) -> Vec<SupportWorker> {
         let mut stmt = self
             .connection
-            .prepare("SELECT * FROM Support_Workers")
+            .prepare(&format!("SELECT * FROM Support_Workers {}", sort))
             .unwrap();
         stmt.query_map([], |row| {
             Ok(SupportWorker {
@@ -138,8 +140,8 @@ impl DataBase {
         .unwrap()
     }
 
-    pub fn get_filtered_support_workers(&self, filter: String) -> Vec<SupportWorker> {
-        let mut stmt = self.connection.prepare(&format!("SELECT * FROM Support_Workers WHERE {}", filter)).unwrap();
+    pub fn get_filtered_support_workers(&self, filter: String, sort: String) -> Vec<SupportWorker> {
+        let mut stmt = self.connection.prepare(&format!("SELECT * FROM Support_Workers WHERE {} {}", filter, sort)).unwrap();
         stmt.query_map([], |row| {
             Ok(SupportWorker {
                 id: row.get_unwrap(0),
@@ -168,8 +170,8 @@ impl DataBase {
             .unwrap()
     }
 
-    pub fn get_all_venues(&self) -> Vec<Venue> {
-        let mut stmt = self.connection.prepare("SELECT * FROM Venues").unwrap();
+    pub fn get_all_venues(&self, sort: String) -> Vec<Venue> {
+        let mut stmt = self.connection.prepare(&format!("SELECT * FROM Venues {}", sort)).unwrap();
         stmt.query_map([], |row| {
             Ok(Venue {
                 id: row.get_unwrap(0),
@@ -191,8 +193,8 @@ impl DataBase {
         .unwrap()
     }
 
-    pub fn get_filtered_venues(&self, filter: String) -> Vec<Venue> {
-        let mut stmt = self.connection.prepare(&format!("SELECT * FROM Venues WHERE {}", filter)).unwrap();
+    pub fn get_filtered_venues(&self, filter: String, sort: String) -> Vec<Venue> {
+        let mut stmt = self.connection.prepare(&format!("SELECT * FROM Venues WHERE {} {}", filter, sort)).unwrap();
         stmt.query_map([], |row| {
             Ok(Venue {
                 id: row.get_unwrap(0),
@@ -214,8 +216,8 @@ impl DataBase {
             .unwrap()
     }
 
-    pub fn get_all_workshops(&self) -> Vec<Workshop> {
-        let mut stmt = self.connection.prepare("SELECT * FROM Workshops").unwrap();
+    pub fn get_all_workshops(&self, sort: String) -> Vec<Workshop> {
+        let mut stmt = self.connection.prepare(&format!("SELECT * FROM Workshops {}", sort)).unwrap();
         stmt.query_map([], |row| {
             Ok(Workshop {
                 id: row.get_unwrap(0),
@@ -235,8 +237,8 @@ impl DataBase {
             .unwrap()
     }
 
-    pub fn get_filtered_workshops(&self, filter: String) -> Vec<Workshop> {
-        let mut stmt = self.connection.prepare(&format!("SELECT * FROM Workshops WHERE {}", filter)).unwrap();
+    pub fn get_filtered_workshops(&self, filter: String, sort: String) -> Vec<Workshop> {
+        let mut stmt = self.connection.prepare(&format!("SELECT * FROM Workshops WHERE {} {}", filter, sort)).expect(&format!("SELECT * FROM Workshops WHERE {} {}", filter, sort));
         stmt.query_map([], |row| {
             Ok(Workshop {
                 id: row.get_unwrap(0),
@@ -246,6 +248,26 @@ impl DataBase {
                 start_date: row.get_unwrap::<_, String>(4).parse().unwrap(),
                 end_date: row.get_unwrap::<_, String>(5).parse().unwrap(),
             })
+        })
+            .unwrap()
+            .collect::<Result<Vec<_>, _>>()
+            .unwrap()
+    }
+
+    pub fn get_participants_from_workshop(&self, workshop: i32) -> Vec<i32> {
+        let mut stmt = self.connection.prepare(&format!("SELECT * FROM Workshop__Participants WHERE workshop = '{}'", workshop)).unwrap();
+        stmt.query_map([], |row| {
+            Ok(row.get_unwrap(1))
+        })
+            .unwrap()
+            .collect::<Result<Vec<_>, _>>()
+            .unwrap()
+    }
+
+    pub fn get_support_workers_from_workshop(&self, workshop: i32) -> Vec<i32> {
+        let mut stmt = self.connection.prepare(&format!("SELECT * FROM Workshop__Support_Worker WHERE workshop = '{}'", workshop)).unwrap();
+        stmt.query_map([], |row| {
+            Ok(row.get_unwrap(1))
         })
             .unwrap()
             .collect::<Result<Vec<_>, _>>()

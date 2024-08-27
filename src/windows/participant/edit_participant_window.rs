@@ -4,6 +4,8 @@ use chrono::NaiveDate;
 use egui::{Context, TextEdit, Ui};
 use egui_extras::DatePickerButton;
 
+//todo: comment code
+
 #[derive(Default)]
 pub struct EditWindow {
     pub open: bool,

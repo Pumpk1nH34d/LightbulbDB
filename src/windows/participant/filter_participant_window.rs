@@ -1,11 +1,10 @@
-use crate::database_logic::database::DataBase;
 use egui::{Context, TextEdit, Ui};
 
+//todo: comment code
 
 #[derive(Default)]
 pub struct FilterWindow {
     pub open: bool,
-    pub db: DataBase,
     reset: bool,
 
     filter: String,
@@ -128,58 +127,58 @@ impl FilterWindow {
                     if ui.button("✔ APPLY").clicked() {
                         let mut filter = String::new();
                         if !self.first_name.is_empty() {
-                            filter += &format!("first_name = '{}', ", self.first_name)
+                            filter += &format!("first_name = '{}' AND ", self.first_name)
                         };
                         if !self.last_name.is_empty() {
-                            filter += &format!("last_name = '{}', ", self.last_name)
+                            filter += &format!("last_name = '{}' AND ", self.last_name)
                         }
                         if !self.medicare.is_empty() {
-                            filter += &format!("medicare = '{}', ", self.medicare)
+                            filter += &format!("medicare = '{}' AND ", self.medicare)
                         }
                         if !self.address.is_empty() {
-                            filter += &format!("address = '{}', ", self.address)
+                            filter += &format!("address = '{}' AND ", self.address)
                         }
                         if !self.suburb.is_empty() {
-                            filter += &format!("suburb = '{}', ", self.suburb)
+                            filter += &format!("suburb = '{}' AND ", self.suburb)
                         }
                         if !self.postcode.is_empty() {
-                            filter += &format!("postcode = '{}', ", self.postcode)
+                            filter += &format!("postcode = '{}' AND ", self.postcode)
                         }
                         if !self.phone.is_empty() {
-                            filter += &format!("phone = '{}', ", self.phone)
+                            filter += &format!("phone = '{}' AND ", self.phone)
                         }
                         if !self.email.is_empty() {
-                            filter += &format!("email = '{}', ", self.email)
+                            filter += &format!("email = '{}' AND ", self.email)
                         }
                         if !self.medical_notes.is_empty() {
-                            filter += &format!("medical_notes = '{}', ", self.medical_notes)
+                            filter += &format!("medical_notes = '{}' AND ", self.medical_notes)
                         }
                         if !self.dietary_notes.is_empty() {
-                            filter += &format!("dietary_notes = '{}', ", self.dietary_notes)
+                            filter += &format!("dietary_notes = '{}' AND ", self.dietary_notes)
                         }
                         if !self.physical_notes.is_empty() {
-                            filter += &format!("physical_notes = '{}', ", self.physical_notes)
+                            filter += &format!("physical_notes = '{}' AND ", self.physical_notes)
                         }
                         if !self.other_notes.is_empty() {
-                            filter += &format!("other_notes = '{}', ", self.other_notes)
+                            filter += &format!("other_notes = '{}' AND ", self.other_notes)
                         }
                         if !self.support_ratio.is_empty() {
-                            filter += &format!("support_ratio = '{}', ", self.support_ratio)
+                            filter += &format!("support_ratio = '{}' AND ", self.support_ratio)
                         }
                         if !self.private_health_insurer.is_empty() {
-                            filter += &format!("private_health_insurer = '{}', ", self.private_health_insurer)
+                            filter += &format!("private_health_insurer = '{}' AND ", self.private_health_insurer)
                         }
                         if !self.private_health_number.is_empty() {
-                            filter += &format!("private_health_number = '{}', ", self.private_health_number)
+                            filter += &format!("private_health_number = '{}' AND ", self.private_health_number)
                         }
                         if !self.communication_preference.is_empty() {
-                            filter += &format!("communication_preference = '{}', ", self.communication_preference)
+                            filter += &format!("communication_preference = '{}' AND ", self.communication_preference)
                         }
                         if !self.ndis_plan_number.is_empty() {
-                            filter += &format!("ndis_plan_number = '{}', ", self.ndis_plan_number)
+                            filter += &format!("ndis_plan_number = '{}' AND ", self.ndis_plan_number)
                         }
                         if !filter.is_empty() {
-                            filter.truncate(filter.len() - 2)
+                            filter.truncate(filter.len() - 5)
                         }
                         self.filter = filter;
                     }

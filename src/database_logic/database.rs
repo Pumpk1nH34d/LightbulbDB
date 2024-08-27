@@ -1,5 +1,7 @@
 use rusqlite::{Connection, Result};
 
+//todo: comment code
+
 pub struct DataBase {
     pub connection: Connection,
 }
@@ -383,7 +385,78 @@ impl DataBase {
         ",
             (),
         )?;
-        
+        self.connection.execute(
+            "
+            INSERT INTO Workshop__Participants (workshop, participant) VALUES
+            (1, 1),
+            (1, 2),
+            (2, 3),
+            (2, 4),
+            (3, 5),
+            (3, 6),
+            (4, 7),
+            (4, 8),
+            (5, 9),
+            (5, 10),
+            (6, 1),
+            (6, 3),
+            (7, 2),
+            (7, 4),
+            (8, 5),
+            (8, 6),
+            (9, 7),
+            (9, 9),
+            (10, 8),
+            (10, 10),
+            (1, 3),
+            (2, 4),
+            (3, 7),
+            (4, 6),
+            (5, 5),
+            (6, 9),
+            (7, 8),
+            (8, 2),
+            (9, 10),
+            (10, 1);
+            ",
+            (),
+        )?;
+        self.connection.execute(
+            "
+            INSERT INTO Workshop__Support_Worker (workshop, support_worker) VALUES
+            (1, 1),
+            (1, 2),
+            (2, 3),
+            (2, 4),
+            (3, 5),
+            (3, 6),
+            (4, 7),
+            (4, 8),
+            (5, 9),
+            (5, 10),
+            (6, 1),
+            (6, 3),
+            (7, 2),
+            (7, 4),
+            (8, 5),
+            (8, 6),
+            (9, 7),
+            (9, 9),
+            (10, 8),
+            (10, 10),
+            (1, 3),
+            (2, 4),
+            (3, 7),
+            (4, 6),
+            (5, 5),
+            (6, 9),
+            (7, 8),
+            (8, 2),
+            (9, 10),
+            (10, 1);
+            ",
+            (),
+        )?;
         Ok(())
         
         

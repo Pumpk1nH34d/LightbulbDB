@@ -2,6 +2,8 @@ use crate::database_logic::data_structs::Venue;
 use crate::database_logic::database::DataBase;
 use egui::{Context, TextEdit, Ui};
 
+//todo: comment code
+
 #[derive(Default)]
 pub struct AddWindow {
     pub open: bool,

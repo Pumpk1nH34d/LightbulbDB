@@ -2,26 +2,9 @@ use crate::database_logic::data_structs::{Participant, SupportWorker, Venue, Wor
 use crate::database_logic::database::DataBase;
 use rusqlite::{params, Result};
 
+//todo: comment code
+
 impl DataBase {
-    pub fn create_support_worker(&self, support_worker: SupportWorker) -> Result<()> {
-        self.connection.execute(
-            "INSERT INTO Support_Workers (first_name, last_name, phone, email, dob, address, suburb, postcode, first_aid, first_aid_file, confidentiality_agreement, police_clearance, car_insurance, other_qualifications, notes, phone) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15)",
-            params![
-                support_worker.first_name,
-                support_worker.last_name,
-                support_worker.phone,
-                support_worker.dob.as_ref().unwrap().to_string(),
-                support_worker.address, support_worker.suburb,
-                support_worker.postcode, support_worker.first_aid,
-                support_worker.confidentiality_agreement,
-                support_worker.police_clearance,
-                support_worker.car_insurance,
-                support_worker.other_qualifications,
-                support_worker.notes
-            ],
-        )?; // need to add email
-        Ok(())
-    }
 
     pub fn add_participant(&self, participant: Participant) -> Result<()> {
         self.connection.execute(
@@ -112,6 +95,32 @@ impl DataBase {
                 workshop.end_date.to_string()
             ],
         )?;
+        Ok(())
+    }
+
+    pub fn add_participants_to_workshop(&self, participants: &Vec<i32>, workshop: i32) -> Result<()> {
+        for participant in participants {
+            self.connection.execute(
+                "INSERT INTO Workshop__Participants (workshop, participant) VALUES (?1, ?2)",
+                params![
+                workshop,
+                participant
+            ],
+            )?;
+        }
+        Ok(())
+    }
+
+    pub fn add_support_workers_to_workshop(&self, support_workers: &Vec<i32>, workshop: i32) -> Result<()> {
+        for support_worker in support_workers {
+            self.connection.execute(
+                "INSERT INTO Workshop__Support_Worker (workshop, support_worker) VALUES (?1, ?2)",
+                params![
+                workshop,
+                support_worker
+            ],
+            )?;
+        }
         Ok(())
     }
 }

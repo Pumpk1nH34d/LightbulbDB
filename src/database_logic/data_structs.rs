@@ -1,4 +1,8 @@
+use std::fmt::Display;
 use chrono::NaiveDate;
+
+//todo: comment code
+
 /*
 #[derive(Debug)]
 pub struct LineItem {
@@ -90,7 +94,7 @@ pub struct SupportCoordinator {
 }
 */
 
-#[derive(Debug, Default, Clone)]
+#[derive(Debug, Default, Clone, PartialEq)]
 pub struct Participant {
     pub id: Option<i32>,
     pub first_name: String,
@@ -164,8 +168,8 @@ pub struct WorkshopSupportWorker {
 
 #[derive(Debug)]
 pub struct WorkshopParticipant {
-    pub workshop: Workshop,
-    pub participant: Participant,
+    pub workshop: i64,
+    pub participant: i64,
 }
 
 #[derive(Debug, Clone, Default)]
@@ -177,3 +181,12 @@ pub struct Workshop {
     pub start_date: NaiveDate,
     pub end_date: NaiveDate,
 }
+
+#[derive(Default, Debug, PartialEq)]
+pub enum Sort {
+    #[default]
+    AlphabeticalAscending,
+    AlphabeticalDescending,
+}
+
+

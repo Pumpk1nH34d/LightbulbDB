@@ -1,4 +1,5 @@
-use crate::database_logic::data_structs::Participant;
+use std::fmt::{Display};
+use crate::database_logic::data_structs::{Participant, Sort};
 use crate::database_logic::database::DataBase;
 use crate::windows::participant::{
     add_participant_window::AddWindow, edit_participant_window::EditWindow,
@@ -6,9 +7,19 @@ use crate::windows::participant::{
 };
 use egui::{Context, Ui};
 
+//todo: comment code
+
+fn sort_to_string(sort: &Sort) -> String {
+    match sort {
+        Sort::AlphabeticalAscending => {String::from("ORDER BY first_name ASC")}
+        Sort::AlphabeticalDescending => {String::from("ORDER BY first_name DESC")}
+    }
+}
+
 #[derive(Default)]
 pub struct ParticipantsView {
     db: DataBase,
+    sort: Sort,
     filter: String,
     add_window: AddWindow,
     edit_window: EditWindow,
@@ -26,11 +37,10 @@ impl ParticipantsView {
 
     fn main_view(&mut self, ui: &mut Ui) {
         let participants = if self.filter.is_empty() {
-            self.db.get_all_participants()
+            self.db.get_all_participants(sort_to_string(&self.sort))
         } else {
-            self.db.get_filtered_participants(self.filter.clone())
+            self.db.get_filtered_participants(self.filter.clone(), sort_to_string(&self.sort))
         };
-        let size = participants.len();
         egui::Grid::new("headings")
             .num_columns(5)
             .spacing([30.0, 4.0])
@@ -49,29 +59,29 @@ impl ParticipantsView {
                 .spacing([30.0, 4.0])
                 .striped(true)
                 .show(ui, |ui| {
-                    for index in 0..size {
+                    for participant in participants {
                         if ui
                             .button(format!(
                                 "{} {}",
-                                &participants[index].first_name, &participants[index].last_name
+                                participant.first_name, participant.last_name
                             ))
                             .clicked()
                         {
-                            self.selected_participant = participants[index].clone();
+                            self.selected_participant = participant.clone();
                         }
-                        ui.label(match participants[index].dob {
+                        ui.label(match participant.dob {
                             None => String::new(),
                             Some(value) => value.format("%d-%m-%Y").to_string(),
                         });
-                        ui.label(match participants[index].phone.clone() {
+                        ui.label(match participant.phone.clone() {
                             None => String::new(),
                             Some(value) => value.to_string(),
                         });
-                        ui.label(match participants[index].email.clone() {
+                        ui.label(match participant.email.clone() {
                             None => String::new(),
                             Some(value) => value.to_string(),
                         });
-                        ui.label(match &participants[index].support_ratio {
+                        ui.label(match participant.support_ratio {
                             None => String::new(),
                             Some(value) => {
                                 format!("1:{}", value)
@@ -266,6 +276,24 @@ impl ParticipantsView {
                         self.db.drop_db().unwrap();
                         self.db.create_db().unwrap();
                     };
+                    ui.label("Sort: ");
+                    egui::ComboBox::from_label("")
+                        .selected_text(match self.sort {
+                            Sort::AlphabeticalAscending => {String::from("Ascending")}
+                            Sort::AlphabeticalDescending => {String::from("Descending")}
+                        })
+                        .show_ui(ui, |ui| {
+                            ui.selectable_value(
+                                &mut self.sort,
+                                Sort::AlphabeticalAscending,
+                                "Ascending",
+                            );
+                            ui.selectable_value(
+                                &mut self.sort,
+                                Sort::AlphabeticalDescending,
+                                "Descending",
+                            );
+                        });
                 });
             });
     }

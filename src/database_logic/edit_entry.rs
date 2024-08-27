@@ -2,6 +2,8 @@ use crate::database_logic::data_structs::{Participant, SupportWorker, Venue, Wor
 use crate::database_logic::database::DataBase;
 use rusqlite::{params, Result};
 
+//todo: comment code
+
 impl DataBase {
     pub fn edit_participant(&self, participant: Participant) -> Result<()> {
         self.connection.execute(

@@ -2,11 +2,12 @@ use crate::database_logic::data_structs::Venue;
 use crate::database_logic::database::DataBase;
 use egui::{Context, TextEdit, Ui};
 
+//todo: comment code
+
 #[derive(Default)]
 pub struct EditWindow {
     pub open: bool,
     pub db: DataBase,
-    reset: bool,
 
     changed: bool,
     venue_check: Venue,
@@ -231,7 +232,7 @@ impl EditWindow {
                         };
                         if ui.button("❌ Delete").clicked() {
                             // todo: need to add confirmation button.
-                            self.db.delete_venues(self.venue_check.id.unwrap());
+                            self.db.delete_venues(self.venue_check.id.unwrap()).unwrap();
                             self.venue_check.id = None;
                             self.changed = true;
                         };
