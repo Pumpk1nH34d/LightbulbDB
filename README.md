@@ -1,4 +1,4 @@
-# Light Bulb DB
+# Lightbulb DB
 
 The SQLite database viewer and editor written in Rust.
 
