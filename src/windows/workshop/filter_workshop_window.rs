@@ -1,9 +1,6 @@
-use chrono::NaiveDate;
 use crate::database_logic::data_structs::{Participant, SupportWorker, Venue, Workshop};
 use crate::database_logic::database::DataBase;
 use egui::{Context, TextEdit, Ui};
-use egui_extras::DatePickerButton;
-
 //todo: comment code
 
 #[derive(Default)]

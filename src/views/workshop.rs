@@ -1,4 +1,4 @@
-use std::fmt::{format, Display};
+use std::fmt::{Display};
 use crate::database_logic::data_structs::{Workshop, Sort, Participant, SupportWorker};
 use crate::database_logic::database::DataBase;
 use crate::windows::workshop::{
