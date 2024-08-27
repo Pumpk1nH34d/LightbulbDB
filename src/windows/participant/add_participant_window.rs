@@ -286,7 +286,6 @@ impl AddWindow {
                         ui.label("Mandatory text fields cannot be empty");
                     } else {
                         if ui.button("➕ ADD").clicked() {
-                            // TODO: Add data validation here before creating a new participant
 
                             // Create a new Participant instance with the provided details
                             let new_participant = Participant {
