@@ -1,17 +1,18 @@
+// Import necessary modules and structs for the functionality
 use crate::database_logic::data_structs::Participant;
 use crate::database_logic::database::DataBase;
 use chrono::NaiveDate;
 use egui::{Context, TextEdit, Ui};
 use egui_extras::DatePickerButton;
 
-//todo: comment code
-
+// Define the AddWindow struct with default values
 #[derive(Default)]
 pub struct AddWindow {
-    pub open: bool,
-    pub db: DataBase,
-    reset: bool,
+    pub open: bool, // Indicates if the window is open
+    pub db: DataBase, // Database instance for interacting with participant data
+    reset: bool, // Flag to determine if the form should be reset
 
+    // Fields representing participant details
     first_name: String,
     last_name: String,
     medicare: String,
@@ -41,26 +42,30 @@ pub struct AddWindow {
 }
 
 impl AddWindow {
+    // Function to display the UI for adding a participant
     pub fn ui(&mut self, _ui: &mut Ui, ctx: &Context) {
-        egui::Window::new("Create Participant")
-            .open(&mut self.open)
+        egui::Window::new("Create Participant") // Create a new window with the title "Create Participant"
+            .open(&mut self.open) // Check if the window is open
             .show(ctx, |ui| {
                 egui::ScrollArea::vertical().show(ui, |ui| {
-                    egui::Grid::new("add_grid")
-                        .num_columns(2)
-                        .spacing([40.0, 4.0])
-                        .striped(true)
+                    egui::Grid::new("add_grid") // Create a grid layout for the form
+                        .num_columns(2) // Specify the number of columns in the grid
+                        .spacing([40.0, 4.0]) // Set the spacing between columns and rows
+                        .striped(true) // Add striped styling to the grid rows
                         .show(ui, |ui| {
+                            // Display input fields for each participant detail
                             ui.label("First name:");
                             ui.add(
                                 TextEdit::singleline(&mut self.first_name).hint_text("First name"),
                             );
                             ui.end_row();
+
                             ui.label("Last name:");
                             ui.add(
                                 TextEdit::singleline(&mut self.last_name).hint_text("Last name"),
                             );
                             ui.end_row();
+
                             ui.label("Date of birth:");
                             ui.horizontal(|ui| {
                                 ui.add_enabled_ui(!self.dob.0, |ui| {
@@ -74,6 +79,7 @@ impl AddWindow {
                                 ui.checkbox(&mut self.dob.0, "Null?");
                             });
                             ui.end_row();
+
                             ui.label("Phone number:");
                             ui.horizontal(|ui| {
                                 ui.add_enabled_ui(!self.phone.0, |ui| {
@@ -85,6 +91,7 @@ impl AddWindow {
                                 ui.checkbox(&mut self.phone.0, "Null?");
                             });
                             ui.end_row();
+
                             ui.label("Email:");
                             ui.horizontal(|ui| {
                                 ui.add_enabled_ui(!self.email.0, |ui| {
@@ -95,113 +102,125 @@ impl AddWindow {
                                 ui.checkbox(&mut self.email.0, "Null?");
                             });
                             ui.end_row();
+
                             ui.label("Medicare Number:");
                             ui.add(TextEdit::singleline(&mut self.medicare).hint_text("Medicare"));
                             ui.end_row();
-                            ui.label("medical_notes:");
+
+                            ui.label("Medical Notes:");
                             ui.horizontal(|ui| {
                                 ui.add_enabled_ui(!self.medical_notes.0, |ui| {
                                     ui.add(
                                         TextEdit::singleline(&mut self.medical_notes.1)
-                                            .hint_text("medical_notes"),
+                                            .hint_text("Medical Notes"),
                                     );
                                 });
                                 ui.checkbox(&mut self.medical_notes.0, "Null?");
                             });
                             ui.end_row();
-                            ui.label("dietary_notes:");
+
+                            ui.label("Dietary Notes:");
                             ui.horizontal(|ui| {
                                 ui.add_enabled_ui(!self.dietary_notes.0, |ui| {
                                     ui.add(
                                         TextEdit::singleline(&mut self.dietary_notes.1)
-                                            .hint_text("dietary_notes"),
+                                            .hint_text("Dietary Notes"),
                                     );
                                 });
                                 ui.checkbox(&mut self.dietary_notes.0, "Null?");
                             });
                             ui.end_row();
-                            ui.label("physical_notes:");
+
+                            ui.label("Physical Notes:");
                             ui.horizontal(|ui| {
                                 ui.add_enabled_ui(!self.physical_notes.0, |ui| {
                                     ui.add(
                                         TextEdit::singleline(&mut self.physical_notes.1)
-                                            .hint_text("physical_notes"),
+                                            .hint_text("Physical Notes"),
                                     );
                                 });
                                 ui.checkbox(&mut self.physical_notes.0, "Null?");
                             });
                             ui.end_row();
-                            ui.label("other_notes:");
+
+                            ui.label("Other Notes:");
                             ui.horizontal(|ui| {
                                 ui.add_enabled_ui(!self.other_notes.0, |ui| {
                                     ui.add(
                                         TextEdit::singleline(&mut self.other_notes.1)
-                                            .hint_text("other_notes"),
+                                            .hint_text("Other Notes"),
                                     );
                                 });
                                 ui.checkbox(&mut self.other_notes.0, "Null?");
                             });
                             ui.end_row();
-                            ui.label("support_ratio:");
+
+                            ui.label("Support Ratio:");
                             ui.horizontal(|ui| {
                                 ui.add_enabled_ui(!self.support_ratio.0, |ui| {
                                     ui.add(
                                         TextEdit::singleline(&mut self.support_ratio.1)
-                                            .hint_text("support_ratio"),
+                                            .hint_text("Support Ratio"),
                                     );
                                 });
                                 ui.checkbox(&mut self.support_ratio.0, "Null?");
                             });
                             ui.end_row();
-                            ui.label("photo_permission:");
+
+                            ui.label("Photo Permission:");
                             ui.horizontal(|ui| {
                                 ui.checkbox(&mut self.photo_permission.1, "Photo Permission?");
                                 ui.checkbox(&mut self.photo_permission.0, "Null?");
                             });
                             ui.end_row();
-                            ui.label("private_hospital_preference:");
+
+                            ui.label("Private Hospital Preference:");
                             ui.horizontal(|ui| {
                                 ui.checkbox(
                                     &mut self.private_hospital_preference.1,
-                                    "private_hospital_preference?",
+                                    "Private Hospital Preference?",
                                 );
                                 ui.checkbox(&mut self.private_hospital_preference.0, "Null?");
                             });
                             ui.end_row();
-                            ui.label("private_health_number:");
+
+                            ui.label("Private Health Number:");
                             ui.horizontal(|ui| {
                                 ui.add_enabled_ui(!self.private_health_number.0, |ui| {
                                     ui.add(
                                         TextEdit::singleline(&mut self.private_health_number.1)
-                                            .hint_text("private_health_number"),
+                                            .hint_text("Private Health Number"),
                                     );
                                 });
                                 ui.checkbox(&mut self.private_health_number.0, "Null?");
                             });
                             ui.end_row();
-                            ui.label("communication_preference:");
+
+                            ui.label("Communication Preference:");
                             ui.horizontal(|ui| {
                                 ui.add_enabled_ui(!self.communication_preference.0, |ui| {
                                     ui.add(
                                         TextEdit::singleline(&mut self.communication_preference.1)
-                                            .hint_text("communication_preference"),
+                                            .hint_text("Communication Preference"),
                                     );
                                 });
                                 ui.checkbox(&mut self.communication_preference.0, "Null?");
                             });
                             ui.end_row();
-                            ui.label("ndis_plan_number:");
+
+                            ui.label("NDIS Plan Number:");
                             ui.horizontal(|ui| {
                                 ui.add_enabled_ui(!self.ndis_plan_number.0, |ui| {
                                     ui.add(
                                         TextEdit::singleline(&mut self.ndis_plan_number.1)
-                                            .hint_text("ndis_plan_number"),
+                                            .hint_text("NDIS Plan Number"),
                                     );
                                 });
                                 ui.checkbox(&mut self.ndis_plan_number.0, "Null?");
                             });
                             ui.end_row();
-                            ui.label("ndis_plan_start_date:");
+
+                            ui.label("NDIS Plan Start Date:");
                             ui.horizontal(|ui| {
                                 ui.add_enabled_ui(!self.ndis_plan_start_date.0, |ui| {
                                     ui.add(
@@ -214,7 +233,8 @@ impl AddWindow {
                                 ui.checkbox(&mut self.ndis_plan_start_date.0, "Null?");
                             });
                             ui.end_row();
-                            ui.label("ndis_plan_end_date:");
+
+                            ui.label("NDIS Plan End Date:");
                             ui.horizontal(|ui| {
                                 ui.add_enabled_ui(!self.ndis_plan_end_date.0, |ui| {
                                     ui.add(
@@ -227,42 +247,47 @@ impl AddWindow {
                                 ui.checkbox(&mut self.ndis_plan_end_date.0, "Null?");
                             });
                             ui.end_row();
-                            ui.label("core_funding:");
+
+                            ui.label("Core Funding:");
                             ui.horizontal(|ui| {
-                                ui.checkbox(&mut self.core_funding.1, "core_funding?");
+                                ui.checkbox(&mut self.core_funding.1, "Core Funding?");
                                 ui.checkbox(&mut self.core_funding.0, "Null?");
                             });
                             ui.end_row();
-                            ui.label("capacity_building_funding:");
+
+                            ui.label("Capacity Building Funding:");
                             ui.horizontal(|ui| {
                                 ui.checkbox(
                                     &mut self.capacity_building_funding.1,
-                                    "capacity_building_funding?",
+                                    "Capacity Building Funding?",
                                 );
                                 ui.checkbox(&mut self.capacity_building_funding.0, "Null?");
                             });
                             ui.end_row();
-                            ui.label("self_managed:");
+
+                            ui.label("Self-Managed:");
                             ui.horizontal(|ui| {
-                                ui.checkbox(&mut self.self_managed.1, "self_managed?");
+                                ui.checkbox(&mut self.self_managed.1, "Self-Managed?");
                                 ui.checkbox(&mut self.self_managed.0, "Null?");
                             });
                             ui.end_row();
-                            ui.label("plan_managed:");
+
+                            ui.label("Plan-Managed:");
                             ui.horizontal(|ui| {
-                                ui.checkbox(&mut self.plan_managed.1, "plan_managed?");
+                                ui.checkbox(&mut self.plan_managed.1, "Plan-Managed?");
                                 ui.checkbox(&mut self.plan_managed.0, "Null?");
                             });
-
                             ui.end_row();
                         });
                 });
-                ui.separator();
+                ui.separator(); // Add a separator for visual distinction
                 ui.horizontal(|ui| {
                     if ui.button("➕ ADD").clicked() {
-                        // todo: need to add data validation.
+                        // TODO: Add data validation here before creating a new participant
+
+                        // Create a new Participant instance with the provided details
                         let new_participant = Participant {
-                            id: None,
+                            id: None, // The ID is automatically generated
                             first_name: self.first_name.clone(),
                             last_name: self.last_name.clone(),
                             medicare_number: self.medicare.clone(),
@@ -303,19 +328,20 @@ impl AddWindow {
                             ndis_plan_end_date: (!self.ndis_plan_end_date.0)
                                 .then_some(self.ndis_plan_end_date.1),
                         };
-                        self.db.add_participant(new_participant).unwrap();
+                        self.db.add_participant(new_participant).unwrap(); // Add the participant to the database
                     };
                     if ui.button("🔃 Reset").clicked() {
-                        self.reset = true;
+                        self.reset = true; // Set the reset flag to true when the reset button is clicked
                     };
                 });
             });
         if !self.open | self.reset {
-            self.reset_values();
+            self.reset_values(); // Reset form values if the window is closed or reset is triggered
         }
     }
 
+    // Function to reset all values in the form to their default state
     pub fn reset_values(&mut self) {
-        (*self, self.open) = (Self::default(), self.open);
+        (*self, self.open) = (Self::default(), self.open); // Reset the struct fields while preserving the open state
     }
 }

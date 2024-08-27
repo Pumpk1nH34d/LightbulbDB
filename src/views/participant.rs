@@ -1,4 +1,4 @@
-use std::fmt::{Display};
+// Importing necessary modules and traits
 use crate::database_logic::data_structs::{Participant, Sort};
 use crate::database_logic::database::DataBase;
 use crate::windows::participant::{
@@ -7,59 +7,68 @@ use crate::windows::participant::{
 };
 use egui::{Context, Ui};
 
-//todo: comment code
-
+// Function to convert Sort enum to corresponding SQL order by clause
 fn sort_to_string(sort: &Sort) -> String {
     match sort {
+        // If the sort is AlphabeticalAscending, return SQL clause for ascending order
         Sort::AlphabeticalAscending => {String::from("ORDER BY first_name ASC")}
+        // If the sort is AlphabeticalDescending, return SQL clause for descending order
         Sort::AlphabeticalDescending => {String::from("ORDER BY first_name DESC")}
     }
 }
 
+// Struct representing the ParticipantsView, which manages the UI for participant data
 #[derive(Default)]
 pub struct ParticipantsView {
-    db: DataBase,
-    sort: Sort,
-    filter: String,
-    add_window: AddWindow,
-    edit_window: EditWindow,
-    filter_window: FilterWindow,
-    selected_participant: Participant,
+    db: DataBase,                  // Database instance to interact with participant data
+    sort: Sort,                    // Current sort order
+    filter: String,                // Current filter applied to participant data
+    add_window: AddWindow,         // Instance of the window for adding a participant
+    edit_window: EditWindow,       // Instance of the window for editing a participant
+    filter_window: FilterWindow,   // Instance of the window for filtering participants
+    selected_participant: Participant, // The currently selected participant
 }
 
 impl ParticipantsView {
+    // Method to build and display the main UI elements
     pub fn ui(&mut self, ui: &mut Ui, ctx: &Context) {
-        self.right_panel_view(ui);
-        self.bottom_menu_view(ui);
-        self.load_windows_ui(ui, ctx);
-        self.main_view(ui);
+        self.right_panel_view(ui);    // Display the right panel view
+        self.bottom_menu_view(ui);    // Display the bottom menu view
+        self.load_windows_ui(ui, ctx); // Load and display the windows UI
+        self.main_view(ui);           // Display the main view with participant data
     }
 
+    // Method to display the main participant data view
     fn main_view(&mut self, ui: &mut Ui) {
+        // Get the list of participants based on the current filter and sort settings
         let participants = if self.filter.is_empty() {
-            self.db.get_all_participants(sort_to_string(&self.sort))
+            self.db.get_all_participants(sort_to_string(&self.sort)) // Get all participants if no filter
         } else {
-            self.db.get_filtered_participants(self.filter.clone(), sort_to_string(&self.sort))
+            self.db.get_filtered_participants(self.filter.clone(), sort_to_string(&self.sort)) // Get filtered participants
         };
+        // Create a grid to display the column headings
         egui::Grid::new("headings")
-            .num_columns(5)
-            .spacing([30.0, 4.0])
-            .striped(false)
+            .num_columns(5) // Number of columns
+            .spacing([30.0, 4.0]) // Spacing between columns
+            .striped(false) // Disable row striping
             .show(ui, |ui| {
                 ui.label("Name");
                 ui.label("Date of Birth");
                 ui.label("Phone Number");
                 ui.label("Email");
                 ui.label("Support Ratio");
-                ui.end_row();
+                ui.end_row(); // End the heading row
             });
+        // Create a scrollable area to display participant data
         egui::ScrollArea::vertical().show(ui, |ui| {
             egui::Grid::new("participant_results")
-                .num_columns(5)
-                .spacing([30.0, 4.0])
-                .striped(true)
+                .num_columns(5) // Number of columns
+                .spacing([30.0, 4.0]) // Spacing between columns
+                .striped(true) // Enable row striping for better readability
                 .show(ui, |ui| {
+                    // Iterate through each participant and display their data
                     for participant in participants {
+                        // Display a button with the participant's name, and set the selected participant if clicked
                         if ui
                             .button(format!(
                                 "{} {}",
@@ -69,34 +78,42 @@ impl ParticipantsView {
                         {
                             self.selected_participant = participant.clone();
                         }
+                        // Display participant's date of birth, formatted or empty if none
                         ui.label(match participant.dob {
                             None => String::new(),
                             Some(value) => value.format("%d-%m-%Y").to_string(),
                         });
+                        // Display participant's phone number or empty if none
                         ui.label(match participant.phone.clone() {
                             None => String::new(),
                             Some(value) => value.to_string(),
                         });
+                        // Display participant's email or empty if none
                         ui.label(match participant.email.clone() {
                             None => String::new(),
                             Some(value) => value.to_string(),
                         });
+                        // Display participant's support ratio or empty if none
                         ui.label(match participant.support_ratio {
                             None => String::new(),
                             Some(value) => {
                                 format!("1:{}", value)
                             }
                         });
-                        ui.end_row();
+                        ui.end_row(); // End the row for this participant
                     }
                 });
         });
     }
+
+    // Method to display the right panel with detailed participant information
     fn right_panel_view(&mut self, ui: &mut Ui) {
+        // Create a resizable side panel on the right
         egui::SidePanel::right("right_panel")
             .resizable(true)
             .default_width(150.0)
             .show_inside(ui, |ui| {
+                // If a participant is selected, display their detailed information
                 if self.selected_participant.id.is_some() {
                     ui.vertical_centered(|ui| {
                         ui.heading(format!(
@@ -105,6 +122,7 @@ impl ParticipantsView {
                             self.selected_participant.last_name
                         ));
                     });
+                    // Scrollable area to display all detailed fields of the participant
                     egui::ScrollArea::vertical().show(ui, |ui| {
                         ui.label(format!(
                             "Name: {} {}",
@@ -250,6 +268,7 @@ impl ParticipantsView {
                         ));
                     });
                 } else {
+                    // If no participant is selected, display a prompt to select one
                     ui.vertical_centered(|ui| {
                         ui.heading("SELECT PARTICIPANT");
                     });
@@ -257,37 +276,46 @@ impl ParticipantsView {
             });
     }
 
+    // Method to display the bottom menu with options to create, edit, and filter participants
     fn bottom_menu_view(&mut self, ui: &mut Ui) {
+        // Create a top-bottom panel at the bottom of the screen
         egui::TopBottomPanel::bottom("bottom_panel")
             .resizable(false)
             .max_height(25.0)
             .show_inside(ui, |ui| {
                 ui.horizontal(|ui| {
+                    // Button to toggle the add participant window
                     if ui.button("➕ Create").clicked() {
                         self.add_window.open = !self.add_window.open;
                     };
+                    // Button to toggle the edit participant window
                     if ui.button("✏ Edit").clicked() {
                         self.edit_window.open = !self.edit_window.open;
                     };
+                    // Button to toggle the filter participant window
                     if ui.button("⛭ Filter").clicked() {
                         self.filter_window.open = !self.filter_window.open;
                     };
+                    // Button to reset the database
                     if ui.button("RESET DB").clicked() {
-                        self.db.drop_db().unwrap();
-                        self.db.create_db().unwrap();
+                        self.db.drop_db().unwrap(); // Drop the current database
+                        self.db.create_db().unwrap(); // Create a new database
                     };
-                    ui.label("Sort: ");
+                    ui.label("Sort: "); // Label for the sort dropdown
+                    // ComboBox to select the sorting order
                     egui::ComboBox::from_label("")
                         .selected_text(match self.sort {
                             Sort::AlphabeticalAscending => {String::from("Ascending")}
                             Sort::AlphabeticalDescending => {String::from("Descending")}
                         })
                         .show_ui(ui, |ui| {
+                            // Option to select ascending sort order
                             ui.selectable_value(
                                 &mut self.sort,
                                 Sort::AlphabeticalAscending,
                                 "Ascending",
                             );
+                            // Option to select descending sort order
                             ui.selectable_value(
                                 &mut self.sort,
                                 Sort::AlphabeticalDescending,
@@ -297,9 +325,11 @@ impl ParticipantsView {
                 });
             });
     }
+
+    // Method to load and display the add, edit, and filter participant windows
     fn load_windows_ui(&mut self, ui: &mut Ui, ctx: &Context) {
-        self.add_window.ui(ui, ctx);
-        self.edit_window.ui(ui, ctx, self.selected_participant.clone());
-        self.filter = self.filter_window.ui(ui, ctx);
+        self.add_window.ui(ui, ctx); // Load and display the add participant window
+        self.edit_window.ui(ui, ctx, self.selected_participant.clone()); // Load and display the edit participant window
+        self.filter = self.filter_window.ui(ui, ctx); // Load and display the filter participant window and update the filter string
     }
 }

@@ -1,14 +1,15 @@
+// Importing the necessary modules from the `egui` crate.
 use egui::{Context, TextEdit, Ui};
 
-//todo: comment code
-
+// This struct represents a filter window used in the UI. It stores various fields
+// related to user input and the filter's open and reset state.
 #[derive(Default)]
 pub struct FilterWindow {
-    pub open: bool,
-    reset: bool,
+    pub open: bool,  // Indicates whether the filter window is open.
+    reset: bool,     // Indicates whether the filter values should be reset.
 
+    // Fields for storing user input data.
     filter: String,
-
     first_name: String,
     last_name: String,
     medicare: String,
@@ -28,17 +29,24 @@ pub struct FilterWindow {
     ndis_plan_number: String,
 }
 
+// Implementation block for the `FilterWindow` struct.
 impl FilterWindow {
+    // Function to render the UI for the filter window.
+    // Takes a mutable reference to `self`, a mutable reference to the UI, and the context.
     pub fn ui(&mut self, _ui: &mut Ui, ctx: &Context) -> String {
+        // Creating a new window with the title "Filer Venue".
         egui::Window::new("Filer Venue")
-            .open(&mut self.open)
-            .show(ctx, |ui| {
+            .open(&mut self.open)  // Set whether the window is open.
+            .show(ctx, |ui| {      // Display the window with the given context.
+                // Creating a vertical scroll area inside the window.
                 egui::ScrollArea::vertical().show(ui, |ui| {
+                    // Creating a grid layout for the input fields.
                     egui::Grid::new("filter_venue_grid")
-                        .num_columns(2)
-                        .spacing([40.0, 4.0])
-                        .striped(true)
+                        .num_columns(2)    // Setting the number of columns to 2.
+                        .spacing([40.0, 4.0])  // Setting the spacing between elements.
+                        .striped(true)     // Enabling striped rows.
                         .show(ui, |ui| {
+                            // Adding labels and text fields for each input field.
                             ui.label("First name:");
                             ui.add(
                                 TextEdit::singleline(&mut self.first_name)
@@ -122,9 +130,11 @@ impl FilterWindow {
                             ui.end_row();
                         });
                 });
-                ui.separator();
+                ui.separator();  // Adding a separator in the UI.
+                // Adding buttons for applying the filter and resetting the values.
                 ui.horizontal(|ui| {
                     if ui.button("✔ APPLY").clicked() {
+                        // Building the filter string based on non-empty input fields.
                         let mut filter = String::new();
                         if !self.first_name.is_empty() {
                             filter += &format!("first_name = '{}' AND ", self.first_name)
@@ -177,22 +187,24 @@ impl FilterWindow {
                         if !self.ndis_plan_number.is_empty() {
                             filter += &format!("ndis_plan_number = '{}' AND ", self.ndis_plan_number)
                         }
+                        // Removing the trailing " AND " from the filter string.
                         if !filter.is_empty() {
                             filter.truncate(filter.len() - 5)
                         }
-                        self.filter = filter;
+                        self.filter = filter;  // Updating the filter string.
                     }
                     if ui.button("🔃 Reset").clicked() {
-                        self.reset = true;
+                        self.reset = true;  // Setting the reset flag to true when the reset button is clicked.
                     };
                 });
             });
         if self.reset {
-            self.reset_values();
+            self.reset_values();  // Resetting the values if the reset flag is set.
         };
-        self.filter.clone()
+        self.filter.clone()  // Returning the filter string.
     }
 
+    // Function to reset the filter window's values to their default states.
     pub fn reset_values(&mut self) {
         (*self, self.open) = (Self::default(), self.open);
     }

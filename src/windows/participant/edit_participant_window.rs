@@ -1,18 +1,21 @@
+// Importing necessary modules and structs from other parts of the project.
+// 'Participant' struct is used to handle participant data, and 'DataBase' for interacting with the database.
 use crate::database_logic::data_structs::Participant;
 use crate::database_logic::database::DataBase;
 use chrono::NaiveDate;
 use egui::{Context, TextEdit, Ui};
 use egui_extras::DatePickerButton;
 
-//todo: comment code
-
+// Main structure for the Edit Window, which manages the state of the window,
+// including whether it's open, if data has changed, and the participant's information.
 #[derive(Default)]
 pub struct EditWindow {
-    pub open: bool,
-    pub db: DataBase,
-    changed: bool,
-    participant_check: Participant,
-    
+    pub open: bool, // Indicates if the window is open.
+    pub db: DataBase, // The database instance.
+    changed: bool, // Flag to track if any changes have been made.
+    participant_check: Participant, // Stores the current participant being edited.
+
+    // Fields for participant information, each with a corresponding bool to indicate if it's set to 'null'.
     first_name: String,
     last_name: String,
     medicare: String,
@@ -42,12 +45,16 @@ pub struct EditWindow {
 }
 
 impl EditWindow {
+    // Main UI function that creates and manages the Edit Window interface.
     pub fn ui(&mut self, _ui: &mut Ui, ctx: &Context, participant: Participant) {
+        // If a different participant is selected, update the participant_check and other fields.
         if self.participant_check.id != participant.id {
             self.participant_check = participant.clone();
             self.first_name = participant.first_name;
             self.last_name = participant.last_name;
             self.medicare = participant.medicare_number;
+
+            // Handling optional fields, setting them to 'null' if None, or assigning their value if Some.
             match participant.dob {
                 None => self.dob.0 = true,
                 Some(value) => self.dob = (false, value),
@@ -141,24 +148,31 @@ impl EditWindow {
                 Some(value) => self.plan_managed = (false, value),
             }
         }
+
+        // If the window is not open, reset the 'changed' flag.
         if !self.open {
             self.changed = false;
         };
+
+        // Create the main Edit Participant window.
         egui::Window::new("Edit Participant")
             .open(&mut self.open)
             .show(ctx, |ui| {
+                // Display messages if changes have been made or if no participant is selected.
                 if self.changed {
                     ui.label("DONE ✔");
                     ui.label("Reselect Participant to see changes.");
                 } else if self.participant_check.id.is_none() {
                     ui.label("Select a Participant to EDIT");
                 } else {
+                    // Create a scrollable area for the participant's details.
                     egui::ScrollArea::vertical().show(ui, |ui| {
                         egui::Grid::new("edit_participant")
                             .num_columns(2)
                             .spacing([40.0, 4.0])
                             .striped(true)
                             .show(ui, |ui| {
+                                // Create input fields for each participant detail with validation checks.
                                 ui.label("First name:");
                                 ui.add(
                                     TextEdit::singleline(&mut self.first_name)
@@ -299,7 +313,7 @@ impl EditWindow {
                                             TextEdit::singleline(
                                                 &mut self.communication_preference.1,
                                             )
-                                            .hint_text("communication_preference"),
+                                                .hint_text("communication_preference"),
                                         );
                                     });
                                     ui.checkbox(&mut self.communication_preference.0, "Null?");
@@ -374,6 +388,7 @@ impl EditWindow {
                     });
                     ui.separator();
                     ui.horizontal(|ui| {
+                        // Confirm button to save changes, creating a new Participant instance with updated data.
                         if ui.button("✔ Confirm").clicked() {
                             let edited_participant = Participant {
                                 // todo: need to add data validation.
@@ -420,10 +435,12 @@ impl EditWindow {
                                     .then_some(self.ndis_plan_end_date.1),
                             };
 
+                            // Saving the edited participant to the database.
                             self.db.edit_participant(edited_participant).unwrap();
                             self.participant_check.id = None;
                             self.changed = true;
                         };
+                        // Delete button to remove the participant from the database.
                         if ui.button("❌ Delete").clicked() {
                             // todo: need to add confirmation button.
                             self.db.delete_participant(self.participant_check.id.unwrap()).unwrap();

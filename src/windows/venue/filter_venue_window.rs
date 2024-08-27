@@ -1,14 +1,16 @@
 use egui::{Context, TextEdit, Ui};
 
-//todo: comment code
-
+// The `FilterWindow` struct represents the state of the filter window UI.
+// It includes fields for the visibility of the window (`open`), whether a reset has been triggered (`reset`),
+// and various fields for the filtering criteria such as `name`, `address`, `suburb`, etc.
 #[derive(Default)]
 pub struct FilterWindow {
-    pub open: bool,
-    reset: bool,
+    pub open: bool, // Controls whether the window is open.
+    reset: bool,    // Tracks whether the reset button was clicked.
 
+    // Fields for the filtering criteria.
     filter: String,
-    
+
     name: String,
     address: String,
     suburb: String,
@@ -23,16 +25,22 @@ pub struct FilterWindow {
 }
 
 impl FilterWindow {
+    // This method defines the user interface (UI) for the filter window.
+    // It returns the filter string that contains the filtering criteria selected by the user.
     pub fn ui(&mut self, _ui: &mut Ui, ctx: &Context) -> String {
+        // Create a new window with the title "Filter Venue".
         egui::Window::new("Filer Venue")
-            .open(&mut self.open)
+            .open(&mut self.open) // Set the window open status based on the `open` field.
             .show(ctx, |ui| {
+                // Display the filtering fields in a scrollable area.
                 egui::ScrollArea::vertical().show(ui, |ui| {
+                    // Create a grid layout with two columns and spacing between elements.
                     egui::Grid::new("filter_venue_grid")
                         .num_columns(2)
                         .spacing([40.0, 4.0])
                         .striped(true)
                         .show(ui, |ui| {
+                            // Display labels and text input fields for each filtering criterion.
                             ui.label("Name:");
                             ui.add(TextEdit::singleline(&mut self.name).hint_text("name"));
                             ui.end_row();
@@ -82,7 +90,9 @@ impl FilterWindow {
                 });
                 ui.separator();
                 ui.horizontal(|ui| {
+                    // Handle the "APPLY" button click event.
                     if ui.button("✔ APPLY").clicked() {
+                        // Build the filter string based on the filled fields.
                         let mut filter = String::new();
                         if !self.name.is_empty() {
                             filter += &format!("name = '{}' AND ", self.name)
@@ -117,22 +127,28 @@ impl FilterWindow {
                         if !self.notes.is_empty() {
                             filter += &format!("notes = '{}' AND ", self.notes)
                         }
+                        // Remove the last " AND " from the filter string if it exists.
                         if !filter.is_empty() {
                             filter.truncate(filter.len() - 5)
                         }
+                        // Store the generated filter string in the `filter` field.
                         self.filter = filter;
                     }
+                    // Handle the "Reset" button click event.
                     if ui.button("🔃 Reset").clicked() {
                         self.reset = true;
                     };
                 });
             });
+        // If the reset flag is set, reset the fields to their default values.
         if self.reset {
             self.reset_values();
         };
+        // Return the generated filter string.
         self.filter.clone()
     }
 
+    // This method resets all fields in the filter window to their default values.
     pub fn reset_values(&mut self) {
         (*self, self.open) = (Self::default(), self.open);
     }

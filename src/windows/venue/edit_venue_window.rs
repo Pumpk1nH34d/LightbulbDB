@@ -2,16 +2,18 @@ use crate::database_logic::data_structs::Venue;
 use crate::database_logic::database::DataBase;
 use egui::{Context, TextEdit, Ui};
 
-//todo: comment code
-
+// This structure represents the edit window for a venue,
+// providing various fields that can be edited and tracked.
 #[derive(Default)]
 pub struct EditWindow {
-    pub open: bool,
-    pub db: DataBase,
+    pub open: bool, // Indicates whether the window is open.
+    pub db: DataBase, // The database connection for editing venues.
 
-    changed: bool,
-    venue_check: Venue,
+    changed: bool, // Tracks if any changes were made.
+    venue_check: Venue, // Stores the current venue being edited.
 
+    // Fields representing different attributes of a venue,
+    // with a boolean to indicate if the field should be null.
     name: String,
     address: (bool, String),
     suburb: (bool, String),
@@ -26,7 +28,10 @@ pub struct EditWindow {
 }
 
 impl EditWindow {
+    // This method is responsible for rendering the UI of the edit window.
     pub fn ui(&mut self, _ui: &mut Ui, ctx: &Context, venue: Venue) {
+        // Check if the current venue is different from the one being edited.
+        // If so, update the editing fields with the new venue's data.
         if self.venue_check.id != venue.id {
             self.venue_check = venue.clone();
             self.name = venue.name;
@@ -71,9 +76,13 @@ impl EditWindow {
                 Some(value) => self.notes = (false, value),
             }
         }
+
+        // Close the window if it is not open.
         if !self.open {
             self.changed = false;
         };
+
+        // Render the edit window with all venue attributes available for editing.
         egui::Window::new("Edit Venue")
             .open(&mut self.open)
             .show(ctx, |ui| {
@@ -89,6 +98,7 @@ impl EditWindow {
                             .spacing([40.0, 4.0])
                             .striped(true)
                             .show(ui, |ui| {
+                                // Render the editable fields for each venue attribute.
                                 ui.label("Name:");
                                 ui.add(TextEdit::singleline(&mut self.name).hint_text("name"));
                                 ui.end_row();
@@ -206,6 +216,7 @@ impl EditWindow {
                     });
                     ui.separator();
                     ui.horizontal(|ui| {
+                        // Confirm button to save changes made to the venue.
                         if ui.button("✔ Confirm").clicked() {
                             // todo: need to add data validation.
                             let edited_venue = Venue {
@@ -230,6 +241,8 @@ impl EditWindow {
                             self.venue_check.id = None;
                             self.changed = true;
                         };
+
+                        // Delete button to remove the selected venue from the database.
                         if ui.button("❌ Delete").clicked() {
                             // todo: need to add confirmation button.
                             self.db.delete_venues(self.venue_check.id.unwrap()).unwrap();
